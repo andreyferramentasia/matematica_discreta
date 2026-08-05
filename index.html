@@ -1,137 +1,21 @@
 <meta charset="UTF-8">
 <title>Mapa de Aulas: Matemática Discreta 2026.2</title>
+<link rel="stylesheet" href="assets/estilo.css">
 <style>
-  :root {
-    color-scheme: light;
-    --bg:        #f7f8fa;
-    --surface:   #ffffff;
-    --surface-2: #f1f3f6;
-    --ink:       #12151b;
-    --ink-2:     #5b6472;
-    --ink-mute:  #898f99;
-    --border:   #e1e4e9;
-    --accent:    #34418c;
-    --accent-ink:#ffffff;
-
-    --content:      #2a78d6;
-    --content-bg:   #eaf1fb;
-    --revisao:      #a8720f;
-    --revisao-bg:   #fbf0da;
-    --prova:        #c23b3a;
-    --prova-bg:     #fbeaea;
-    --ps:           #4a3aa7;
-    --ps-bg:        #eeecf9;
-    --feriado:      #898781;
-    --feriado-bg:   #eef0f2;
-
-    --font-display: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
-    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --font-data: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:where(:not([data-theme="light"])) {
-      color-scheme: dark;
-      --bg:        #0f1216;
-      --surface:   #171b21;
-      --surface-2: #1d222a;
-      --ink:       #eef0f3;
-      --ink-2:     #a3aab5;
-      --ink-mute:  #7c828c;
-      --border:   #2a2f38;
-      --accent:    #8b98e8;
-      --accent-ink:#0f1216;
-
-      --content:      #4c95e8;
-      --content-bg:   #172436;
-      --revisao:      #dda23e;
-      --revisao-bg:   #2c2413;
-      --prova:        #e2726f;
-      --prova-bg:     #301a1a;
-      --ps:           #a291ea;
-      --ps-bg:        #211c37;
-      --feriado:      #8c929b;
-      --feriado-bg:   #1c1f24;
-    }
-  }
-  :root[data-theme="dark"] {
-    color-scheme: dark;
-    --bg:        #0f1216;
-    --surface:   #171b21;
-    --surface-2: #1d222a;
-    --ink:       #eef0f3;
-    --ink-2:     #a3aab5;
-    --ink-mute:  #7c828c;
-    --border:   #2a2f38;
-    --accent:    #8b98e8;
-    --accent-ink:#0f1216;
-
-    --content:      #4c95e8;
-    --content-bg:   #172436;
-    --revisao:      #dda23e;
-    --revisao-bg:   #2c2413;
-    --prova:        #e2726f;
-    --prova-bg:     #301a1a;
-    --ps:           #a291ea;
-    --ps-bg:        #211c37;
-    --feriado:      #8c929b;
-    --feriado-bg:   #1c1f24;
-  }
-  :root[data-theme="light"] {
-    color-scheme: light;
-    --bg:        #f7f8fa;
-    --surface:   #ffffff;
-    --surface-2: #f1f3f6;
-    --ink:       #12151b;
-    --ink-2:     #5b6472;
-    --ink-mute:  #898f99;
-    --border:   #e1e4e9;
-    --accent:    #34418c;
-    --accent-ink:#ffffff;
-  }
-
-  * { box-sizing: border-box; }
-  html, body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: var(--font-body);
-  }
-  body {
-    padding: 2.5rem 1.25rem 4rem;
-  }
-  .page {
-    max-width: 1180px;
-    margin: 0 auto;
-  }
-
-  header.masthead {
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 1.5rem;
-    margin-bottom: 2rem;
-  }
-  .eyebrow {
-    font-family: var(--font-data);
-    font-size: 0.72rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 0 0 0.6rem;
-  }
+  /* overrides: esta página é um painel, não um artigo de aula */
+  html { font-size: 16px; }
+  body { padding: 2.5rem 1.25rem 4rem; }
   h1 {
-    font-family: var(--font-display);
-    font-weight: 400;
     font-size: clamp(1.7rem, 3.2vw, 2.4rem);
-    line-height: 1.15;
-    margin: 0 0 0.5rem;
     text-wrap: balance;
-    color: var(--ink);
+    text-align: left;
   }
-  .sub {
-    color: var(--ink-2);
-    font-size: 0.98rem;
-    max-width: 62ch;
-    line-height: 1.55;
-    margin: 0;
+  .sub { margin: 0; text-align: left; }
+  h2 {
+    font-size: 1.25rem;
+    margin: 0 0 0.9rem;
+    padding-bottom: 0;
+    border-bottom: none;
   }
 
   /* stat tiles */
@@ -180,13 +64,6 @@
   /* timeline */
   section.timeline {
     margin-bottom: 1.5rem;
-  }
-  h2 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 1.25rem;
-    margin: 0 0 0.9rem;
-    color: var(--ink);
   }
   .section-note {
     color: var(--ink-2);

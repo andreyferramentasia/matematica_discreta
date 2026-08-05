@@ -1,0 +1,346 @@
+:root {
+  color-scheme: light;
+  --bg:        #f7f8fa;
+  --surface:   #ffffff;
+  --surface-2: #f1f3f6;
+  --ink:       #12151b;
+  --ink-2:     #5b6472;
+  --ink-mute:  #898f99;
+  --border:   #e1e4e9;
+  --accent:    #34418c;
+  --accent-ink:#ffffff;
+  --content-bg:#eaf1fb;
+  --ok:        #1a7a4c;
+  --ok-bg:     #e8f5ee;
+  --bad:       #ab3a2c;
+
+  --content:      #2a78d6;
+  --revisao:      #a8720f;
+  --revisao-bg:   #fbf0da;
+  --prova:        #c23b3a;
+  --prova-bg:     #fbeaea;
+  --ps:           #4a3aa7;
+  --ps-bg:        #eeecf9;
+  --feriado:      #898781;
+  --feriado-bg:   #eef0f2;
+
+  --font-display: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-data: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --bg:        #0f1216;
+    --surface:   #171b21;
+    --surface-2: #1d222a;
+    --ink:       #eef0f3;
+    --ink-2:     #a3aab5;
+    --ink-mute:  #7c828c;
+    --border:   #2a2f38;
+    --accent:    #8b98e8;
+    --accent-ink:#0f1216;
+    --content-bg:#172436;
+    --ok:        #59c48a;
+    --ok-bg:     #10261c;
+    --bad:       #e08a72;
+
+    --content:      #4c95e8;
+    --revisao:      #dda23e;
+    --revisao-bg:   #2c2413;
+    --prova:        #e2726f;
+    --prova-bg:     #301a1a;
+    --ps:           #a291ea;
+    --ps-bg:        #211c37;
+    --feriado:      #8c929b;
+    --feriado-bg:   #1c1f24;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg:        #0f1216;
+  --surface:   #171b21;
+  --surface-2: #1d222a;
+  --ink:       #eef0f3;
+  --ink-2:     #a3aab5;
+  --ink-mute:  #7c828c;
+  --border:   #2a2f38;
+  --accent:    #8b98e8;
+  --accent-ink:#0f1216;
+  --content-bg:#172436;
+  --ok:        #59c48a;
+  --ok-bg:     #10261c;
+  --bad:       #e08a72;
+
+  --content:      #4c95e8;
+  --revisao:      #dda23e;
+  --revisao-bg:   #2c2413;
+  --prova:        #e2726f;
+  --prova-bg:     #301a1a;
+  --ps:           #a291ea;
+  --ps-bg:        #211c37;
+  --feriado:      #8c929b;
+  --feriado-bg:   #1c1f24;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg:        #f7f8fa;
+  --surface:   #ffffff;
+  --surface-2: #f1f3f6;
+  --ink:       #12151b;
+  --ink-2:     #5b6472;
+  --ink-mute:  #898f99;
+  --border:   #e1e4e9;
+  --accent:    #34418c;
+  --accent-ink:#ffffff;
+}
+
+/* ---- base ---- */
+* { box-sizing: border-box; }
+html { font-size: 18px; }
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+body { padding: 2.5rem 2rem 4rem; }
+.page { max-width: 1180px; margin: 0 auto; }
+
+a.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--ink-2);
+  text-decoration: none;
+  margin-bottom: 1.25rem;
+}
+a.back:hover { color: var(--accent); }
+
+header.masthead {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+}
+.eyebrow {
+  font-family: var(--font-data);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 0.6rem;
+}
+h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.7rem, 3.2vw, 2.3rem);
+  line-height: 1.15;
+  margin: 0 0 0.5rem;
+  color: var(--ink);
+  text-align: center;
+}
+.sub {
+  color: var(--ink-2);
+  font-size: 0.98rem;
+  max-width: 62ch;
+  line-height: 1.55;
+  margin: 0 auto;
+  text-align: center;
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.3rem;
+  margin: 2.4rem 0 0.9rem;
+  color: var(--ink);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+h3 {
+  font-size: 1rem;
+  margin: 1.4rem 0 0.5rem;
+  color: var(--ink);
+}
+p { line-height: 1.65; color: var(--ink); }
+ul, ol { line-height: 1.65; }
+
+/* ---- cards ---- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.1rem 1.3rem;
+  margin: 1rem 0;
+}
+.card.tip { background: var(--content-bg); border-color: transparent; }
+.connective-row {
+  display: flex;
+  align-items: stretch;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin: 1.6rem 0;
+}
+.card.connective {
+  flex: 1 1 420px;
+  margin: 0;
+  padding: 1.1rem 1.3rem;
+}
+.connective-text h3 { margin: 0 0 0.5rem; font-size: 1.05rem; }
+.connective-text h3 .sym {
+  font-size: 1.2em;
+  color: var(--accent);
+  background: var(--content-bg);
+}
+.connective-text .idea {
+  margin: 0 0 0.6rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+.connective-text p { margin: 0; }
+.connective-text .resumo {
+  margin: 0.7rem 0 0;
+  font-size: 0.9rem;
+  color: var(--ink-2);
+}
+.connective-row table.truth {
+  margin: 0;
+  flex: 0 0 auto;
+  align-self: stretch;
+  height: auto;
+  font-size: 1.05rem;
+  min-width: 220px;
+}
+.connective-row table.truth th,
+.connective-row table.truth td {
+  padding: 0.5rem 1.3rem;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+code, .sym {
+  font-family: var(--font-data);
+  background: var(--surface-2);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.92em;
+}
+
+/* ---- truth tables ---- */
+table.truth {
+  border-collapse: collapse;
+  margin: 0.8rem auto 1.2rem;
+  font-family: var(--font-data);
+  font-size: 0.9rem;
+}
+table.truth th, table.truth td {
+  border: 1px solid var(--border);
+  padding: 0.45rem 0.9rem;
+  text-align: center;
+}
+table.truth th {
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font-weight: 600;
+}
+.v { color: var(--ok); font-weight: 600; }
+.f { color: var(--bad); font-weight: 600; }
+
+table.demorgan { font-size: 1.15rem; }
+table.demorgan th, table.demorgan td { padding: 0.65rem 1.05rem; }
+table.demorgan .pq   { background: rgba(171,58,44,0.08); }
+table.demorgan .eq   { color: var(--ink-mute); font-weight: 400; background: transparent; }
+table.demorgan .and, table.demorgan .result {
+  box-shadow: inset 0 0 0 2px var(--accent);
+  border-radius: 4px;
+}
+table.demorgan .neg  { background: rgba(224,180,20,0.2); }
+table.demorgan .end  { border-right: 2px solid var(--ink-2); }
+table.demorgan .check { font-weight: 700; font-size: 1.05em; }
+table.ref-or { font-size: 1.05rem; margin: 0.6rem auto 0.4rem; }
+table.ref-or th, table.ref-or td { padding: 0.55rem 1rem; }
+
+/* ---- code blocks ---- */
+pre {
+  background: #221a0f;
+  color: #d3af86;
+  border: 1px solid #3a2c1a;
+  border-radius: 8px;
+  padding: 0.9rem 1.1rem;
+  overflow-x: auto;
+  font-family: var(--font-data);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+pre .kw   { color: #98676a; }
+pre .fn   { color: #f06431; }
+pre .str  { color: #889b4a; }
+pre .bool { color: #f79a32; }
+pre .com  { color: #7a5c39; font-style: italic; }
+
+/* ---- exercises ---- */
+ol.exercises { list-style: none; margin: 0; padding: 0; counter-reset: ex; }
+ol.exercises > li {
+  counter-increment: ex;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.9rem;
+}
+ol.exercises > li::before {
+  content: "Exercício " counter(ex);
+  display: block;
+  font-family: var(--font-data);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.45rem;
+}
+
+details.answer {
+  margin-top: 0.6rem;
+}
+details.answer summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+details.answer[open] summary { margin-bottom: 0.5rem; }
+details.answer .reveal {
+  background: var(--ok-bg);
+  color: var(--ok);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+}
+details.answer .reveal .f { color: var(--bad); }
+details.answer .reveal .v { color: var(--ok); }
+details.answer .reveal table.truth { color: var(--ink); }
+
+details.demo {
+  margin-top: 0.6rem;
+}
+details.demo summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+details.demo[open] summary { margin-bottom: 0.6rem; }
+details.demo .reveal {
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+}
+details.demo .reveal table.truth { margin: 0 auto 0.6rem; }
+details.demo .reveal p:last-child { margin-bottom: 0; }
+
+footer.nav {
+  margin-top: 2.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border);
+}
