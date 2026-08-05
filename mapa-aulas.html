@@ -1,0 +1,556 @@
+<meta charset="UTF-8">
+<title>Mapa de Aulas: Matemática Discreta 2026.2</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg:        #f7f8fa;
+    --surface:   #ffffff;
+    --surface-2: #f1f3f6;
+    --ink:       #12151b;
+    --ink-2:     #5b6472;
+    --ink-mute:  #898f99;
+    --border:   #e1e4e9;
+    --accent:    #34418c;
+    --accent-ink:#ffffff;
+
+    --content:      #2a78d6;
+    --content-bg:   #eaf1fb;
+    --revisao:      #a8720f;
+    --revisao-bg:   #fbf0da;
+    --prova:        #c23b3a;
+    --prova-bg:     #fbeaea;
+    --ps:           #4a3aa7;
+    --ps-bg:        #eeecf9;
+    --feriado:      #898781;
+    --feriado-bg:   #eef0f2;
+
+    --font-display: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-data: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --bg:        #0f1216;
+      --surface:   #171b21;
+      --surface-2: #1d222a;
+      --ink:       #eef0f3;
+      --ink-2:     #a3aab5;
+      --ink-mute:  #7c828c;
+      --border:   #2a2f38;
+      --accent:    #8b98e8;
+      --accent-ink:#0f1216;
+
+      --content:      #4c95e8;
+      --content-bg:   #172436;
+      --revisao:      #dda23e;
+      --revisao-bg:   #2c2413;
+      --prova:        #e2726f;
+      --prova-bg:     #301a1a;
+      --ps:           #a291ea;
+      --ps-bg:        #211c37;
+      --feriado:      #8c929b;
+      --feriado-bg:   #1c1f24;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg:        #0f1216;
+    --surface:   #171b21;
+    --surface-2: #1d222a;
+    --ink:       #eef0f3;
+    --ink-2:     #a3aab5;
+    --ink-mute:  #7c828c;
+    --border:   #2a2f38;
+    --accent:    #8b98e8;
+    --accent-ink:#0f1216;
+
+    --content:      #4c95e8;
+    --content-bg:   #172436;
+    --revisao:      #dda23e;
+    --revisao-bg:   #2c2413;
+    --prova:        #e2726f;
+    --prova-bg:     #301a1a;
+    --ps:           #a291ea;
+    --ps-bg:        #211c37;
+    --feriado:      #8c929b;
+    --feriado-bg:   #1c1f24;
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --bg:        #f7f8fa;
+    --surface:   #ffffff;
+    --surface-2: #f1f3f6;
+    --ink:       #12151b;
+    --ink-2:     #5b6472;
+    --ink-mute:  #898f99;
+    --border:   #e1e4e9;
+    --accent:    #34418c;
+    --accent-ink:#ffffff;
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+  }
+  body {
+    padding: 2.5rem 1.25rem 4rem;
+  }
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+
+  header.masthead {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .eyebrow {
+    font-family: var(--font-data);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 0.6rem;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.7rem, 3.2vw, 2.4rem);
+    line-height: 1.15;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+    color: var(--ink);
+  }
+  .sub {
+    color: var(--ink-2);
+    font-size: 0.98rem;
+    max-width: 62ch;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* stat tiles */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 2.25rem;
+  }
+  .stat {
+    background: var(--surface);
+    padding: 1.1rem 1.2rem;
+  }
+  .stat .label {
+    font-size: 0.74rem;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+  }
+  .stat .value {
+    font-family: var(--font-data);
+    font-variant-numeric: tabular-nums;
+    font-size: 1.9rem;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .stat .value small {
+    font-size: 1rem;
+    color: var(--ink-mute);
+    font-weight: 400;
+  }
+  .stat .foot {
+    margin-top: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--ink-mute);
+  }
+  .stat.accent-content .value { color: var(--content); }
+  .stat.accent-revisao .value { color: var(--revisao); }
+  .stat.accent-prova .value { color: var(--prova); }
+
+  /* timeline */
+  section.timeline {
+    margin-bottom: 1.5rem;
+  }
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.25rem;
+    margin: 0 0 0.9rem;
+    color: var(--ink);
+  }
+  .section-note {
+    color: var(--ink-2);
+    font-size: 0.88rem;
+    margin: 0 0 1rem;
+    max-width: 70ch;
+    line-height: 1.5;
+  }
+  .tl-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    padding: 1.1rem 1.1rem 0.9rem;
+  }
+  .tl-months {
+    display: grid;
+    grid-template-columns: 88px repeat(19, minmax(30px, 1fr));
+    gap: 3px;
+    font-family: var(--font-data);
+    font-size: 0.68rem;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+    min-width: 680px;
+  }
+  .tl-months span {
+    text-align: center;
+    border-left: 1px solid var(--border);
+    padding-left: 4px;
+  }
+  .tl-months span:first-child { border-left: none; }
+  .tl-row {
+    display: grid;
+    grid-template-columns: 88px repeat(19, minmax(30px, 1fr));
+    gap: 3px;
+    align-items: center;
+    min-width: 680px;
+    margin-bottom: 3px;
+  }
+  .tl-row .rowlabel {
+    font-size: 0.78rem;
+    color: var(--ink-2);
+    font-weight: 600;
+  }
+  .tl-cell {
+    height: 26px;
+    border-radius: 4px;
+    position: relative;
+    cursor: default;
+  }
+  .tl-cell[data-status="conteudo"] { background: var(--content); }
+  .tl-cell[data-status="revisao"]  { background: var(--revisao); }
+  .tl-cell[data-status="prova"]    { background: var(--prova); }
+  .tl-cell[data-status="feriado"]  { background: var(--feriado); background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.35) 0 2px, transparent 2px 5px); }
+  .tl-cell[data-status="ps"]       { background: var(--ps); }
+
+  .tl-cell[data-tip]:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: var(--bg);
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    white-space: nowrap;
+    padding: 0.3rem 0.55rem;
+    border-radius: 6px;
+    z-index: 5;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.1rem;
+    margin-top: 1rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--border);
+  }
+  .legend .item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--ink-2);
+  }
+  .legend .swatch {
+    width: 11px;
+    height: 11px;
+    border-radius: 3px;
+    flex: none;
+  }
+
+  /* schedule tables */
+  section.schedules {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+  @media (max-width: 760px) {
+    section.schedules { grid-template-columns: 1fr; }
+  }
+  .turma-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .turma-head {
+    padding: 0.9rem 1.1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    background: var(--surface-2);
+  }
+  .turma-head h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.05rem;
+    margin: 0;
+  }
+  .turma-head .day-tag {
+    font-family: var(--font-data);
+    font-size: 0.72rem;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.94rem;
+  }
+  thead th {
+    text-align: left;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-mute);
+    font-weight: 600;
+    padding: 0.55rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody td {
+    padding: 0.5rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--ink);
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.wk, td.date {
+    font-family: var(--font-data);
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+  td.note {
+    color: var(--ink-2);
+    font-size: 0.86rem;
+    line-height: 1.45;
+  }
+  .chip {
+    display: inline-block;
+    font-size: 0.76rem;
+    font-weight: 600;
+    padding: 0.15rem 0.55rem;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+  .chip.conteudo { background: var(--content-bg); color: var(--content); }
+  .chip.revisao  { background: var(--revisao-bg); color: var(--revisao); }
+  .chip.prova    { background: var(--prova-bg); color: var(--prova); }
+  .chip.feriado  { background: var(--feriado-bg); color: var(--feriado); }
+  .chip.ps       { background: var(--ps-bg); color: var(--ps); }
+  tr.is-feriado td { opacity: 0.6; }
+  tr.is-feriado td.date { text-decoration: line-through; }
+
+  a.chip.lesson-link {
+    text-decoration: none;
+    padding-right: 1.5rem;
+    position: relative;
+    box-shadow: 0 0 0 1px currentColor inset;
+    transition: opacity 0.12s ease;
+  }
+  a.chip.lesson-link::after {
+    content: "→";
+    position: absolute;
+    right: 0.55rem;
+  }
+  a.chip.lesson-link:hover { opacity: 0.75; }
+  a.chip.lesson-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="eyebrow">Matemática Discreta · Campo Grande, MS</p>
+    <h1>Mapa de aulas: 2º semestre de 2026</h1>
+    <p class="section-note" style="margin-top:0.6rem;"><strong>Livro-base:</strong> GERSTING, Judith L. <em>Fundamentos Matemáticos para a Ciência da Computação: Matemática Discreta e Suas Aplicações.</em> Rio de Janeiro: LTC. As referências "cap. X.X" na coluna Observação remetem aos capítulos desse livro.</p>
+  </header>
+
+  <section class="stats" aria-label="Resumo do período">
+    <div class="stat accent-content">
+      <div class="label">Turma C: conteúdo</div>
+      <div class="value">10<small> / 19 encontros</small></div>
+      <div class="foot">quartas-feiras</div>
+    </div>
+    <div class="stat accent-content">
+      <div class="label">Turma D: conteúdo</div>
+      <div class="value">10<small> / 19 encontros</small></div>
+      <div class="foot">quintas-feiras</div>
+    </div>
+    <div class="stat accent-revisao">
+      <div class="label">Revisões</div>
+      <div class="value">2<small> por turma</small></div>
+      <div class="foot">véspera de P1 e de P2</div>
+    </div>
+    <div class="stat accent-prova">
+      <div class="label">Dias de avaliação</div>
+      <div class="value">5<small> C · </small>6<small> D</small></div>
+      <div class="foot">P1 + P2 + PS + Exame, dentro dos períodos oficiais</div>
+    </div>
+  </section>
+
+  <section class="timeline">
+    <h2>Linha do tempo por semana</h2>
+    <div class="tl-wrap">
+      <div class="tl-months">
+        <span></span>
+        <span style="grid-column: span 4;">Agosto</span>
+        <span style="grid-column: span 5;">Setembro</span>
+        <span style="grid-column: span 4;">Outubro</span>
+        <span style="grid-column: span 4;">Novembro</span>
+        <span style="grid-column: span 2;">Dezembro</span>
+      </div>
+
+      <div class="tl-row">
+        <span class="rowlabel">Turma C</span>
+        <span class="tl-cell" data-status="conteudo" data-tip="05/08 · Conteúdo"></span>
+        <span class="tl-cell" data-status="conteudo" data-tip="12/08 · Conteúdo"></span>
+        <span class="tl-cell" data-status="conteudo" data-tip="19/08 · Conteúdo"></span>
+        <span class="tl-cell" data-status="feriado" data-tip="26/08 · Feriado (Aniversário de Campo Grande)"></span>
+        <span class="tl-cell" data-status="conteudo" data-tip="02/09 · Conteúdo"></span>
+        <span class="tl-cell" data-status="revisao" data-tip="09/09 · Revisão (véspera de P1)"></span>
+        <span class="tl-cell" data-status="prova" data-tip="16/09 · P1 (período 10–17/09)"></span>
+        <span class="tl-cell" data-status="conteudo" data-tip="23/09 · Conteúdo"></span>
+        <span class="tl-cell" data-status="conteudo" data-tip="30/09 · Conteúdo"></span>
+        <span class="tl-cell" data-status="conteudo" data-tip="07/10 · Conteúdo"></span>
+        <span class="tl-cell" data-status="feriado" data-tip="14/10 · Recesso (Semana do Saco Cheio, 11–16/10)"></span>
+        <span class="tl-cell" data-status="conteudo" data-tip="21/10 · Conteúdo"></span>
+        <span class="tl-cell" data-status="conteudo" data-tip="28/10 · Conteúdo"></span>
+        <span class="tl-cell" data-status="conteudo" data-tip="04/11 · Conteúdo"></span>
+        <span class="tl-cell" data-status="revisao" data-tip="11/11 · Revisão (véspera de P2)"></span>
+        <span class="tl-cell" data-status="prova" data-tip="18/11 · P2 (período 18–27/11)"></span>
+        <span class="tl-cell" data-status="prova" data-tip="25/11 · P2 (período 18–27/11)"></span>
+        <span class="tl-cell" data-status="ps" data-tip="02/12 · PS (período 01–07/12)"></span>
+        <span class="tl-cell" data-status="prova" data-tip="09/12 · Exame (período 09–15/12)"></span>
+      </div>
+
+      <div class="tl-row">
+        <span class="rowlabel">Turma D</span>
+        <span class="tl-cell" data-status="conteudo" data-tip="06/08 · Conteúdo"></span>
+        <span class="tl-cell" data-status="conteudo" data-tip="13/08 · Conteúdo"></span>
+        <span class="tl-cell" data-status="conteudo" data-tip="20/08 · Conteúdo"></span>
+        <span class="tl-cell" data-status="conteudo" data-tip="27/08 · Conteúdo"></span>
+        <span class="tl-cell" data-status="revisao" data-tip="03/09 · Revisão (véspera de P1)"></span>
+        <span class="tl-cell" data-status="prova" data-tip="10/09 · P1 (período 10–17/09)"></span>
+        <span class="tl-cell" data-status="prova" data-tip="17/09 · P1 (período 10–17/09)"></span>
+        <span class="tl-cell" data-status="conteudo" data-tip="24/09 · Conteúdo"></span>
+        <span class="tl-cell" data-status="conteudo" data-tip="01/10 · Conteúdo"></span>
+        <span class="tl-cell" data-status="conteudo" data-tip="08/10 · Conteúdo"></span>
+        <span class="tl-cell" data-status="feriado" data-tip="15/10 · Recesso (Semana do Saco Cheio, 11–16/10)"></span>
+        <span class="tl-cell" data-status="conteudo" data-tip="22/10 · Conteúdo"></span>
+        <span class="tl-cell" data-status="conteudo" data-tip="29/10 · Conteúdo"></span>
+        <span class="tl-cell" data-status="conteudo" data-tip="05/11 · Conteúdo"></span>
+        <span class="tl-cell" data-status="revisao" data-tip="12/11 · Revisão (véspera de P2)"></span>
+        <span class="tl-cell" data-status="prova" data-tip="19/11 · P2 (período 18–27/11)"></span>
+        <span class="tl-cell" data-status="prova" data-tip="26/11 · P2 (período 18–27/11)"></span>
+        <span class="tl-cell" data-status="ps" data-tip="03/12 · PS (período 01–07/12)"></span>
+        <span class="tl-cell" data-status="prova" data-tip="10/12 · Exame (período 09–15/12)"></span>
+      </div>
+
+      <div class="legend">
+        <span class="item"><span class="swatch" style="background:var(--content)"></span>Conteúdo</span>
+        <span class="item"><span class="swatch" style="background:var(--revisao)"></span>Revisão</span>
+        <span class="item"><span class="swatch" style="background:var(--prova)"></span>P1 / P2 / Exame</span>
+        <span class="item"><span class="swatch" style="background:var(--ps)"></span>PS</span>
+        <span class="item"><span class="swatch" style="background:var(--feriado); background-image: repeating-linear-gradient(135deg, rgba(120,120,120,0.5) 0 2px, transparent 2px 5px);"></span>Feriado / Recesso</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="schedules">
+    <div class="turma-card">
+      <div class="turma-head">
+        <h3>Turma C</h3>
+        <span class="day-tag">Quartas-feiras</span>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Sem.</th><th>Data</th><th>Status</th><th>Observação</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="wk">01</td><td class="date">05/08</td><td><a class="chip conteudo lesson-link" href="01/aula1.html" title="Abrir aula 1">Conteúdo</a></td><td class="note">Lógica proposicional: conectivos e valores lógicos, tautologias, conectivos no mundo real e um algoritmo (Gersting, cap. 1.1)</td></tr>
+          <tr><td class="wk">02</td><td class="date">12/08</td><td><span class="chip conteudo">Conteúdo</span></td><td class="note">Técnicas de demonstração: por exaustão, direta, contraposição e por absurdo (cap. 2.1)</td></tr>
+          <tr><td class="wk">03</td><td class="date">19/08</td><td><span class="chip conteudo">Conteúdo</span></td><td class="note">Quantificadores, predicados e validade: simbolização e checagem de validade, com exemplos de consultas e regras de negócio (cap. 1.3)</td></tr>
+          <tr class="is-feriado"><td class="wk">04</td><td class="date">26/08</td><td><span class="chip feriado">Feriado</span></td><td class="note">Aniversário de Campo Grande: confirmar decreto municipal do ano</td></tr>
+          <tr><td class="wk">05</td><td class="date">02/09</td><td><span class="chip conteudo">Conteúdo</span></td><td class="note">Indução: primeiro e segundo princípios, com exemplos aplicados a recursividade e corretude de algoritmos (cap. 2.2)</td></tr>
+          <tr><td class="wk">06</td><td class="date">09/09</td><td><span class="chip revisao">Revisão</span></td><td class="note">Véspera do período de P1</td></tr>
+          <tr><td class="wk">07</td><td class="date">16/09</td><td><span class="chip prova">P1</span></td><td class="note">Dentro do período 10–17/09</td></tr>
+          <tr><td class="wk">08</td><td class="date">23/09</td><td><span class="chip conteudo">Conteúdo</span></td><td class="note">Circuitos lógicos: elementos básicos (AND, OR, NOT, XOR), expressões e funções booleanas, formas canônicas (cap. 8.2)</td></tr>
+          <tr><td class="wk">09</td><td class="date">30/09</td><td><span class="chip conteudo">Conteúdo</span></td><td class="note">Minimização: mapas de Karnaugh (2, 3 e 4 variáveis) (cap. 8.3)</td></tr>
+          <tr><td class="wk">10</td><td class="date">07/10</td><td><span class="chip conteudo">Conteúdo</span></td><td class="note">Conjuntos: notação, relações entre conjuntos, operações (união, interseção, produto cartesiano) e identidades (cap. 4.1)</td></tr>
+          <tr class="is-feriado"><td class="wk">11</td><td class="date">14/10</td><td><span class="chip feriado">Recesso</span></td><td class="note">Semana do Saco Cheio (11 a 16/10)</td></tr>
+          <tr><td class="wk">12</td><td class="date">21/10</td><td><span class="chip conteudo">Conteúdo</span></td><td class="note">Contagem, permutações e combinações: princípios da multiplicação e adição, árvores de decisão, permutações e combinações com e sem repetição (cap. 4.2 e 4.4)</td></tr>
+          <tr><td class="wk">13</td><td class="date">28/10</td><td><span class="chip conteudo">Conteúdo</span></td><td class="note">Grafos: representações (matriz/lista de adjacência), busca em profundidade e em nível (DFS/BFS), caminho mínimo (Dijkstra) e ordem de grandeza/Big O (cap. 6.1, 7.3, 7.4 e 5.5)</td></tr>
+          <tr><td class="wk">14</td><td class="date">04/11</td><td><span class="chip conteudo">Conteúdo</span></td><td class="note">Teoria dos números e criptografia: algoritmo de Euclides (MDC), números primos, aritmética modular e hashing (cap. 2.3, 2.4 e 5.6)</td></tr>
+          <tr><td class="wk">15</td><td class="date">11/11</td><td><span class="chip revisao">Revisão</span></td><td class="note">Véspera do período de P2</td></tr>
+          <tr><td class="wk">16</td><td class="date">18/11</td><td><span class="chip prova">P2</span></td><td class="note">Dentro do período 18–27/11</td></tr>
+          <tr><td class="wk">17</td><td class="date">25/11</td><td><span class="chip prova">P2</span></td><td class="note">Dentro do período 18–27/11</td></tr>
+          <tr><td class="wk">18</td><td class="date">02/12</td><td><span class="chip ps">PS</span></td><td class="note">Dentro do período da PS: 01–07/12</td></tr>
+          <tr><td class="wk">19</td><td class="date">09/12</td><td><span class="chip prova">Exame</span></td><td class="note">Dentro do período 09–15/12 · sem revisão entre PS e Exame (só 1 semana de intervalo)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="turma-card">
+      <div class="turma-head">
+        <h3>Turma D</h3>
+        <span class="day-tag">Quintas-feiras</span>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Sem.</th><th>Data</th><th>Status</th><th>Observação</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="wk">01</td><td class="date">06/08</td><td><a class="chip conteudo lesson-link" href="01/aula1.html" title="Abrir aula 1">Conteúdo</a></td><td class="note">Lógica proposicional: conectivos e valores lógicos, tautologias, conectivos no mundo real e um algoritmo (Gersting, cap. 1.1)</td></tr>
+          <tr><td class="wk">02</td><td class="date">13/08</td><td><span class="chip conteudo">Conteúdo</span></td><td class="note">Técnicas de demonstração: por exaustão, direta, contraposição e por absurdo (cap. 2.1)</td></tr>
+          <tr><td class="wk">03</td><td class="date">20/08</td><td><span class="chip conteudo">Conteúdo</span></td><td class="note">Quantificadores, predicados e validade: simbolização e checagem de validade, com exemplos de consultas e regras de negócio (cap. 1.3)</td></tr>
+          <tr><td class="wk">04</td><td class="date">27/08</td><td><span class="chip conteudo">Conteúdo</span></td><td class="note">Indução: primeiro e segundo princípios, com exemplos aplicados a recursividade e corretude de algoritmos (cap. 2.2)</td></tr>
+          <tr><td class="wk">05</td><td class="date">03/09</td><td><span class="chip revisao">Revisão</span></td><td class="note">Véspera do período de P1</td></tr>
+          <tr><td class="wk">06</td><td class="date">10/09</td><td><span class="chip prova">P1</span></td><td class="note">Dentro do período 10–17/09</td></tr>
+          <tr><td class="wk">07</td><td class="date">17/09</td><td><span class="chip prova">P1</span></td><td class="note">Dentro do período 10–17/09</td></tr>
+          <tr><td class="wk">08</td><td class="date">24/09</td><td><span class="chip conteudo">Conteúdo</span></td><td class="note">Circuitos lógicos: elementos básicos (AND, OR, NOT, XOR), expressões e funções booleanas, formas canônicas (cap. 8.2)</td></tr>
+          <tr><td class="wk">09</td><td class="date">01/10</td><td><span class="chip conteudo">Conteúdo</span></td><td class="note">Minimização: mapas de Karnaugh (2, 3 e 4 variáveis) (cap. 8.3)</td></tr>
+          <tr><td class="wk">10</td><td class="date">08/10</td><td><span class="chip conteudo">Conteúdo</span></td><td class="note">Conjuntos: notação, relações entre conjuntos, operações (união, interseção, produto cartesiano) e identidades (cap. 4.1)</td></tr>
+          <tr class="is-feriado"><td class="wk">11</td><td class="date">15/10</td><td><span class="chip feriado">Recesso</span></td><td class="note">Semana do Saco Cheio (11 a 16/10)</td></tr>
+          <tr><td class="wk">12</td><td class="date">22/10</td><td><span class="chip conteudo">Conteúdo</span></td><td class="note">Contagem, permutações e combinações: princípios da multiplicação e adição, árvores de decisão, permutações e combinações com e sem repetição (cap. 4.2 e 4.4)</td></tr>
+          <tr><td class="wk">13</td><td class="date">29/10</td><td><span class="chip conteudo">Conteúdo</span></td><td class="note">Grafos: representações (matriz/lista de adjacência), busca em profundidade e em nível (DFS/BFS), caminho mínimo (Dijkstra) e ordem de grandeza/Big O (cap. 6.1, 7.3, 7.4 e 5.5)</td></tr>
+          <tr><td class="wk">14</td><td class="date">05/11</td><td><span class="chip conteudo">Conteúdo</span></td><td class="note">Teoria dos números e criptografia: algoritmo de Euclides (MDC), números primos, aritmética modular e hashing (cap. 2.3, 2.4 e 5.6)</td></tr>
+          <tr><td class="wk">15</td><td class="date">12/11</td><td><span class="chip revisao">Revisão</span></td><td class="note">Véspera do período de P2</td></tr>
+          <tr><td class="wk">16</td><td class="date">19/11</td><td><span class="chip prova">P2</span></td><td class="note">Dentro do período 18–27/11</td></tr>
+          <tr><td class="wk">17</td><td class="date">26/11</td><td><span class="chip prova">P2</span></td><td class="note">Dentro do período 18–27/11</td></tr>
+          <tr><td class="wk">18</td><td class="date">03/12</td><td><span class="chip ps">PS</span></td><td class="note">Dentro do período da PS: 01–07/12</td></tr>
+          <tr><td class="wk">19</td><td class="date">10/12</td><td><span class="chip prova">Exame</span></td><td class="note">Dentro do período 09–15/12 · sem revisão entre PS e Exame (só 1 semana de intervalo)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>

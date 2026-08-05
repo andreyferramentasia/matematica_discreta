@@ -1,0 +1,689 @@
+<meta charset="UTF-8">
+<title>Aula 1: Lógica Proposicional | Matemática Discreta</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg:        #f7f8fa;
+    --surface:   #ffffff;
+    --surface-2: #f1f3f6;
+    --ink:       #12151b;
+    --ink-2:     #5b6472;
+    --ink-mute:  #898f99;
+    --border:   #e1e4e9;
+    --accent:    #34418c;
+    --accent-ink:#ffffff;
+    --content-bg:#eaf1fb;
+    --ok:        #1a7a4c;
+    --ok-bg:     #e8f5ee;
+    --bad:       #ab3a2c;
+
+    --font-display: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-data: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --bg:        #0f1216;
+      --surface:   #171b21;
+      --surface-2: #1d222a;
+      --ink:       #eef0f3;
+      --ink-2:     #a3aab5;
+      --ink-mute:  #7c828c;
+      --border:   #2a2f38;
+      --accent:    #8b98e8;
+      --accent-ink:#0f1216;
+      --content-bg:#172436;
+      --ok:        #59c48a;
+      --ok-bg:     #10261c;
+      --bad:       #e08a72;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg:        #0f1216;
+    --surface:   #171b21;
+    --surface-2: #1d222a;
+    --ink:       #eef0f3;
+    --ink-2:     #a3aab5;
+    --ink-mute:  #7c828c;
+    --border:   #2a2f38;
+    --accent:    #8b98e8;
+    --accent-ink:#0f1216;
+    --content-bg:#172436;
+    --ok:        #59c48a;
+    --ok-bg:     #10261c;
+    --bad:       #e08a72;
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --bg:        #f7f8fa;
+    --surface:   #ffffff;
+    --surface-2: #f1f3f6;
+    --ink:       #12151b;
+    --ink-2:     #5b6472;
+    --ink-mute:  #898f99;
+    --border:   #e1e4e9;
+    --accent:    #34418c;
+    --accent-ink:#ffffff;
+    --content-bg:#eaf1fb;
+    --ok:        #1a7a4c;
+    --ok-bg:     #e8f5ee;
+    --bad:       #ab3a2c;
+  }
+
+  * { box-sizing: border-box; }
+  html { font-size: 18px; }
+  html, body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+  }
+  body { padding: 2.5rem 2rem 4rem; }
+  .page { max-width: 1180px; margin: 0 auto; }
+
+  a.back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    color: var(--ink-2);
+    text-decoration: none;
+    margin-bottom: 1.25rem;
+  }
+  a.back:hover { color: var(--accent); }
+
+  header.masthead {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .eyebrow {
+    font-family: var(--font-data);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 0.6rem;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.7rem, 3.2vw, 2.3rem);
+    line-height: 1.15;
+    margin: 0 0 0.5rem;
+    color: var(--ink);
+    text-align: center;
+  }
+  .sub {
+    color: var(--ink-2);
+    font-size: 0.98rem;
+    max-width: 62ch;
+    line-height: 1.55;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.3rem;
+    margin: 2.4rem 0 0.9rem;
+    color: var(--ink);
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  h3 {
+    font-size: 1rem;
+    margin: 1.4rem 0 0.5rem;
+    color: var(--ink);
+  }
+  p { line-height: 1.65; color: var(--ink); }
+  ul, ol { line-height: 1.65; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.1rem 1.3rem;
+    margin: 1rem 0;
+  }
+  .card.tip { background: var(--content-bg); border-color: transparent; }
+  .connective-row {
+    display: flex;
+    align-items: stretch;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin: 1.6rem 0;
+  }
+  .card.connective {
+    flex: 1 1 420px;
+    margin: 0;
+    padding: 1.1rem 1.3rem;
+  }
+  .connective-text h3 { margin: 0 0 0.5rem; font-size: 1.05rem; }
+  .connective-text h3 .sym {
+    font-size: 1.2em;
+    color: var(--accent);
+    background: var(--content-bg);
+  }
+  .connective-text .idea {
+    margin: 0 0 0.6rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .connective-text p { margin: 0; }
+  .connective-text .resumo {
+    margin: 0.7rem 0 0;
+    font-size: 0.9rem;
+    color: var(--ink-2);
+  }
+  .connective-row table.truth {
+    margin: 0;
+    flex: 0 0 auto;
+    align-self: stretch;
+    height: auto;
+    font-size: 1.05rem;
+    min-width: 220px;
+  }
+  .connective-row table.truth th,
+  .connective-row table.truth td {
+    padding: 0.5rem 1.3rem;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+
+  code, .sym {
+    font-family: var(--font-data);
+    background: var(--surface-2);
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+    font-size: 0.92em;
+  }
+
+  table.truth {
+    border-collapse: collapse;
+    margin: 0.8rem auto 1.2rem;
+    font-family: var(--font-data);
+    font-size: 0.9rem;
+  }
+  table.truth th, table.truth td {
+    border: 1px solid var(--border);
+    padding: 0.45rem 0.9rem;
+    text-align: center;
+  }
+  table.truth th {
+    background: var(--surface-2);
+    color: var(--ink-2);
+    font-weight: 600;
+  }
+  .v { color: var(--ok); font-weight: 600; }
+  .f { color: var(--bad); font-weight: 600; }
+
+  table.demorgan { font-size: 1.15rem; }
+  table.demorgan th, table.demorgan td { padding: 0.65rem 1.05rem; }
+  table.demorgan .pq   { background: rgba(171,58,44,0.08); }
+  table.demorgan .eq   { color: var(--ink-mute); font-weight: 400; background: transparent; }
+  table.demorgan .and, table.demorgan .result {
+    box-shadow: inset 0 0 0 2px var(--accent);
+    border-radius: 4px;
+  }
+  table.demorgan .neg  { background: rgba(224,180,20,0.2); }
+  table.demorgan .end  { border-right: 2px solid var(--ink-2); }
+  table.demorgan .check { font-weight: 700; font-size: 1.05em; }
+  table.ref-or { font-size: 1.05rem; margin: 0.6rem auto 0.4rem; }
+  table.ref-or th, table.ref-or td { padding: 0.55rem 1rem; }
+
+  pre {
+    background: #221a0f;
+    color: #d3af86;
+    border: 1px solid #3a2c1a;
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+    overflow-x: auto;
+    font-family: var(--font-data);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  pre .kw   { color: #98676a; }
+  pre .fn   { color: #f06431; }
+  pre .str  { color: #889b4a; }
+  pre .bool { color: #f79a32; }
+  pre .com  { color: #7a5c39; font-style: italic; }
+
+  ol.exercises { list-style: none; margin: 0; padding: 0; counter-reset: ex; }
+  ol.exercises > li {
+    counter-increment: ex;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 0.9rem;
+  }
+  ol.exercises > li::before {
+    content: "Exercício " counter(ex);
+    display: block;
+    font-family: var(--font-data);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.45rem;
+  }
+
+  details.answer {
+    margin-top: 0.6rem;
+  }
+  details.answer summary {
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  details.answer[open] summary { margin-bottom: 0.5rem; }
+  details.answer .reveal {
+    background: var(--ok-bg);
+    color: var(--ok);
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.9rem;
+  }
+  details.answer .reveal .f { color: var(--bad); }
+  details.answer .reveal .v { color: var(--ok); }
+  details.answer .reveal table.truth { color: var(--ink); }
+
+  details.demo {
+    margin-top: 0.6rem;
+  }
+  details.demo summary {
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  details.demo[open] summary { margin-bottom: 0.6rem; }
+  details.demo .reveal {
+    background: var(--surface-2);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+  }
+  details.demo .reveal table.truth { margin: 0 auto 0.6rem; }
+  details.demo .reveal p:last-child { margin-bottom: 0; }
+
+  footer.nav {
+    margin-top: 2.5rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--border);
+  }
+</style>
+
+<div class="page">
+
+  <a class="back" href="../mapa-aulas.html">&larr; Voltar ao mapa de aulas</a>
+
+  <header class="masthead">
+    <p class="eyebrow">Matemática Discreta · Aula 01</p>
+    <h1>Lógica Proposicional</h1>
+    <p class="sub">Conectivos e valores lógicos, tautologias, ordem de precedência e um algoritmo. (Gersting, cap. 1.1)</p>
+  </header>
+
+  <h2>1. Proposição</h2>
+  <p>Uma <strong>proposição</strong> é uma frase declarativa que possui <strong>um único valor lógico</strong>: é <span class="v">verdadeira (V)</span> ou <span class="f">falsa (F)</span>, nunca as duas coisas e nunca nenhuma delas.</p>
+  <div class="card">
+    <p style="margin:0"><strong>É proposição:</strong> "10 é menor que 7" (<span class="f">F</span>) · "Cheyenne é a capital de Wyoming" (<span class="v">V</span>)</p>
+    <p style="margin:0.5rem 0 0"><strong>Não é proposição:</strong> "Ela é muito talentosa" (quem é "ela"? não dá pra dizer V ou F)</p>
+  </div>
+
+  <h2>2. Conectivos lógicos</h2>
+  <p>A gente já usa esses conectivos todo dia sem chamar de "lógica". Aqui eles só ganham um símbolo e uma tabela que mostra, sem ambiguidade, quando o resultado é verdadeiro (V) ou falso (F). O valor da combinação depende só do valor de cada peça.</p>
+
+  <div class="connective-row">
+    <div class="card connective">
+      <div class="connective-text">
+        <h3><span class="sym">A′</span> · Negação · "não A"</h3>
+        <p class="idea">Ideia: inverte o valor.</p>
+        <p>O que era verdadeiro vira falso, e vice-versa. Se "a loja está aberta" é verdade, a negação é "a loja não está aberta".</p>
+        <p class="resumo"><strong>Resumo:</strong> A′ troca V por F, e F por V.</p>
+      </div>
+    </div>
+    <table class="truth">
+      <tr><th>A</th><th>A′</th></tr>
+      <tr><td class="v">V</td><td class="f">F</td></tr>
+      <tr><td class="f">F</td><td class="v">V</td></tr>
+    </table>
+  </div>
+
+  <div class="connective-row">
+    <div class="card connective">
+      <div class="connective-text">
+        <h3><span class="sym">A ∧ B</span> · Conjunção · "A e B"</h3>
+        <p class="idea">Ideia: as duas precisam valer (ambos).</p>
+        <p>É o "e" de uma exigência dupla: para entrar numa festa, você precisa ter mais de 18 anos <strong>e</strong> estar na lista. Falhou em qualquer uma das duas, não entra.</p>
+        <p class="resumo"><strong>Resumo:</strong> A ∧ B só é V quando A e B são V.</p>
+      </div>
+    </div>
+    <table class="truth">
+      <tr><th>A</th><th>B</th><th>A ∧ B</th></tr>
+      <tr><td class="v">V</td><td class="v">V</td><td class="v">V</td></tr>
+      <tr><td class="v">V</td><td class="f">F</td><td class="f">F</td></tr>
+      <tr><td class="f">F</td><td class="v">V</td><td class="f">F</td></tr>
+      <tr><td class="f">F</td><td class="f">F</td><td class="f">F</td></tr>
+    </table>
+  </div>
+
+  <div class="connective-row">
+    <div class="card connective">
+      <div class="connective-text">
+        <h3><span class="sym">A ∨ B</span> · Disjunção · "A ou B"</h3>
+        <p class="idea">Ideia: basta uma valer (pelo menos um).</p>
+        <p>É o cardápio que diz "o combo vem com batata <strong>ou</strong> salada": você pode escolher uma, a outra, ou (na lógica, diferente do dia a dia) até as duas.</p>
+        <p class="resumo"><strong>Resumo:</strong> A ∨ B só é F quando A e B são F.</p>
+      </div>
+    </div>
+    <table class="truth">
+      <tr><th>A</th><th>B</th><th>A ∨ B</th></tr>
+      <tr><td class="v">V</td><td class="v">V</td><td class="v">V</td></tr>
+      <tr><td class="v">V</td><td class="f">F</td><td class="v">V</td></tr>
+      <tr><td class="f">F</td><td class="v">V</td><td class="v">V</td></tr>
+      <tr><td class="f">F</td><td class="f">F</td><td class="f">F</td></tr>
+    </table>
+  </div>
+
+  <div class="connective-row">
+    <div class="card connective">
+      <div class="connective-text">
+        <h3><span class="sym">A → B</span> · Condicional · "se A, então B"</h3>
+        <p class="idea">Ideia: uma regra de causa e efeito (se... então).</p>
+        <p>"Se você ligar o interruptor A, a lâmpada B acende." Isso só é <strong>falso</strong> quando você liga o interruptor e a lâmpada não acende (queimou, por exemplo). Se você não liga o interruptor, a regra simplesmente não fala nada sobre o estado da lâmpada: acesa ou apagada, a frase continua verdadeira, porque ela só garante o que acontece quando o interruptor é ligado.</p>
+        <p class="resumo"><strong>Resumo:</strong> A → B só é F quando A é V e B é F.</p>
+      </div>
+    </div>
+    <table class="truth">
+      <tr><th>A</th><th>B</th><th>A → B</th></tr>
+      <tr><td class="v">V</td><td class="v">V</td><td class="v">V</td></tr>
+      <tr><td class="v">V</td><td class="f">F</td><td class="f">F</td></tr>
+      <tr><td class="f">F</td><td class="v">V</td><td class="v">V</td></tr>
+      <tr><td class="f">F</td><td class="f">F</td><td class="v">V</td></tr>
+    </table>
+  </div>
+
+  <div class="connective-row">
+    <div class="card connective">
+      <div class="connective-text">
+        <h3><span class="sym">A ↔ B</span> · Bicondicional · "A se, e somente se, B"</h3>
+        <p class="idea">Ideia: os dois lados têm que bater exatamente.</p>
+        <p>Continuando com o interruptor: "a lâmpada B está acesa se, e somente se, o interruptor A está ligado" descreve um circuito sem defeito, em que o estado da lâmpada sempre reflete o interruptor, sem exceção. Aqui não existe caso vazio como no condicional: interruptor ligado com lâmpada apagada (queimou) é falso, e interruptor desligado com lâmpada acesa (curto-circuito) também é falso. Só é verdadeiro quando os dois <strong>combinam</strong>.</p>
+        <p class="resumo"><strong>Resumo:</strong> A ↔ B é V quando A e B têm o mesmo valor.</p>
+      </div>
+    </div>
+    <table class="truth">
+      <tr><th>A</th><th>B</th><th>A ↔ B</th></tr>
+      <tr><td class="v">V</td><td class="v">V</td><td class="v">V</td></tr>
+      <tr><td class="v">V</td><td class="f">F</td><td class="f">F</td></tr>
+      <tr><td class="f">F</td><td class="v">V</td><td class="f">F</td></tr>
+      <tr><td class="f">F</td><td class="f">F</td><td class="v">V</td></tr>
+    </table>
+  </div>
+
+  <div class="card tip">
+    <strong>Negação de compostos (Leis de De Morgan):</strong><br>
+    (A ∧ B)′ é o mesmo que A′ ∨ B′: "não (A e B)" = "não A ou não B"<br>
+    (A ∨ B)′ é o mesmo que A′ ∧ B′: "não (A ou B)" = "não A e não B"
+  </div>
+  <h3>Erro comum: só negar A e B, sem trocar o conectivo</h3>
+  <p><strong class="f">Errado</strong> — mantendo o ∧ (A′ ∧ B′): compare com a negação de A ∧ B, invertendo a coluna A∧B linha a linha.</p>
+  <table class="truth demorgan">
+    <tr>
+      <th class="pq">A</th><th class="pq end">B</th><th class="eq"></th><th class="and end">A ∧ B</th>
+      <th class="neg">A′</th><th class="neg end">B′</th><th class="eq"></th><th class="result end">A′ ∧ B′</th>
+      <th class="check">confere?</th>
+    </tr>
+    <tr>
+      <td class="pq v">V</td><td class="pq end v">V</td><td class="eq">=</td><td class="and end v">V</td>
+      <td class="neg f">F</td><td class="neg end f">F</td><td class="eq">=</td><td class="result end f">F</td>
+      <td class="check v">✓</td>
+    </tr>
+    <tr>
+      <td class="pq v">V</td><td class="pq end f">F</td><td class="eq">=</td><td class="and end f">F</td>
+      <td class="neg f">F</td><td class="neg end v">V</td><td class="eq">=</td><td class="result end f">F</td>
+      <td class="check f">✗</td>
+    </tr>
+    <tr>
+      <td class="pq f">F</td><td class="pq end v">V</td><td class="eq">=</td><td class="and end f">F</td>
+      <td class="neg v">V</td><td class="neg end f">F</td><td class="eq">=</td><td class="result end f">F</td>
+      <td class="check f">✗</td>
+    </tr>
+    <tr>
+      <td class="pq f">F</td><td class="pq end f">F</td><td class="eq">=</td><td class="and end f">F</td>
+      <td class="neg v">V</td><td class="neg end v">V</td><td class="eq">=</td><td class="result end v">V</td>
+      <td class="check v">✓</td>
+    </tr>
+  </table>
+
+  <p><strong class="v">Certo</strong> — trocando para ∨ (A′ ∨ B′): agora todas as linhas batem.</p>
+  <table class="truth demorgan">
+    <tr>
+      <th class="pq">A</th><th class="pq end">B</th><th class="eq"></th><th class="and end">A ∧ B</th>
+      <th class="neg">A′</th><th class="neg end">B′</th><th class="eq"></th><th class="result end">A′ ∨ B′</th>
+      <th class="check">confere?</th>
+    </tr>
+    <tr>
+      <td class="pq v">V</td><td class="pq end v">V</td><td class="eq">=</td><td class="and end v">V</td>
+      <td class="neg f">F</td><td class="neg end f">F</td><td class="eq">=</td><td class="result end f">F</td>
+      <td class="check v">✓</td>
+    </tr>
+    <tr>
+      <td class="pq v">V</td><td class="pq end f">F</td><td class="eq">=</td><td class="and end f">F</td>
+      <td class="neg f">F</td><td class="neg end v">V</td><td class="eq">=</td><td class="result end v">V</td>
+      <td class="check v">✓</td>
+    </tr>
+    <tr>
+      <td class="pq f">F</td><td class="pq end v">V</td><td class="eq">=</td><td class="and end f">F</td>
+      <td class="neg v">V</td><td class="neg end f">F</td><td class="eq">=</td><td class="result end v">V</td>
+      <td class="check v">✓</td>
+    </tr>
+    <tr>
+      <td class="pq f">F</td><td class="pq end f">F</td><td class="eq">=</td><td class="and end f">F</td>
+      <td class="neg v">V</td><td class="neg end v">V</td><td class="eq">=</td><td class="result end v">V</td>
+      <td class="check v">✓</td>
+    </tr>
+  </table>
+
+  <p style="margin:0.8rem 0 0.3rem">Repare que A′ ∨ B′ segue o mesmo formato do ∨ comum, só V quando pelo menos um lado é V:</p>
+  <table class="truth ref-or">
+    <tr><th>A</th><th>B</th><th>A ∨ B</th></tr>
+    <tr><td class="v">V</td><td class="v">V</td><td class="v">V</td></tr>
+    <tr><td class="v">V</td><td class="f">F</td><td class="v">V</td></tr>
+    <tr><td class="f">F</td><td class="v">V</td><td class="v">V</td></tr>
+    <tr><td class="f">F</td><td class="f">F</td><td class="f">F</td></tr>
+  </table>
+  <p style="margin-top:-0.5rem">Por isso a negação troca o conectivo: <strong>e</strong> vira <strong>ou</strong>.</p>
+
+  <h2>3. Ordem dos conectivos e tabelas com mais letras</h2>
+  <p>Quando uma expressão tem vários conectivos sem parênteses, como <span class="sym">A ∨ B′ → C</span>, precisamos de uma ordem para saber o que calcular primeiro. É a mesma ideia da matemática comum: em <code>2 + 3 × 4</code> fazemos a multiplicação antes da soma. Aqui a ordem é: primeiro o que está entre parênteses, depois a negação (′), depois ∧ e ∨, depois →, e por último ↔.</p>
+  <div class="card tip">
+    <strong>Exemplo:</strong> <span class="sym">A ∨ B′</span> significa <span class="sym">A ∨ (B′)</span>, não <span class="sym">(A ∨ B)′</span>.<br>
+    <span class="sym">A ∨ B → C</span> significa <span class="sym">(A ∨ B) → C</span>, não <span class="sym">A ∨ (B → C)</span>.<br>
+    <span style="color:var(--ink-2); font-size:0.92em;">O último conectivo a ser aplicado (o que sobra por fora de tudo) é chamado de <strong>conectivo principal</strong> da expressão.</span>
+  </div>
+  <p>Cada letra de proposição funciona como um interruptor: só pode estar V ou F. Com 1 letra existem 2 possibilidades; com 2 letras, 4 combinações; com 3 letras, 8. É a mesma lógica de uma casa com vários interruptores de luz: cada interruptor a mais dobra o número de combinações possíveis. Por isso, uma tabela-verdade com <span class="sym">n</span> letras diferentes sempre tem <span class="sym">2ⁿ</span> linhas.</p>
+  <table class="truth">
+    <tr><th>A</th><th>B</th><th>C</th></tr>
+    <tr><td class="v">V</td><td class="v">V</td><td class="v">V</td></tr>
+    <tr><td class="v">V</td><td class="v">V</td><td class="f">F</td></tr>
+    <tr><td class="v">V</td><td class="f">F</td><td class="v">V</td></tr>
+    <tr><td class="v">V</td><td class="f">F</td><td class="f">F</td></tr>
+    <tr><td class="f">F</td><td class="v">V</td><td class="v">V</td></tr>
+    <tr><td class="f">F</td><td class="v">V</td><td class="f">F</td></tr>
+    <tr><td class="f">F</td><td class="f">F</td><td class="v">V</td></tr>
+    <tr><td class="f">F</td><td class="f">F</td><td class="f">F</td></tr>
+  </table>
+  <p style="margin-top:-0.5rem">Repare no padrão: a última letra (C) alterna a cada linha, a do meio (B) alterna de duas em duas, e a primeira (A) alterna de quatro em quatro. Com 3 letras, são 2³ = 8 linhas.</p>
+
+  <h2>4. Tautologia e contradição</h2>
+  <p>Você já deve ter visto a palavra "tautologia" na aula de português, para descrever uma redundância como "subir para cima" ou "descer para baixo": subir já é ir pra cima, então repetir isso não acrescenta nenhuma informação nova. Na lógica, a ideia é parecida: uma <strong>tautologia</strong> também "não diz nada de novo sobre o mundo", porque ela dá sempre V não importa os valores das partes, só pela estrutura da frase. Uma <strong>contradição</strong> é o oposto, dá sempre F.</p>
+  <p style="text-align:center; font-size:1.1rem; font-weight:600; color:var(--accent); margin:1.2rem 0;">Se a última coluna da tabela-verdade der sempre verdadeiro, é tautologia.</p>
+  <div class="card">
+    <p style="margin:0 0 0.6rem"><strong>Tautologias do dia a dia (sempre V):</strong></p>
+    <ul style="margin:0 0 0.8rem; padding-left:1.2rem">
+      <li>"Ou vai chover amanhã, ou não vai chover amanhã" (A ∨ A′)</li>
+      <li>"Ou a lâmpada está acesa, ou não está acesa" (A ∨ A′)</li>
+      <li>"Ou eu passo de ano, ou eu não passo de ano" (A ∨ A′)</li>
+    </ul>
+    <p style="margin:0 0 0.8rem; color:var(--ink-2); font-size:0.92em">Nenhuma dessas frases depende do que realmente acontece: sempre uma das duas partes é verdadeira, então a frase toda é sempre V.</p>
+    <p style="margin:0 0 0.6rem"><strong>Contradições do dia a dia (sempre F):</strong></p>
+    <ul style="margin:0; padding-left:1.2rem">
+      <li>"Está chovendo e não está chovendo" (A ∧ A′)</li>
+      <li>"A lâmpada está acesa e está apagada ao mesmo tempo" (A ∧ A′)</li>
+    </ul>
+  </div>
+  <table class="truth">
+    <tr><th>A</th><th>A′</th><th>A ∨ A′ (tautologia)</th><th>A ∧ A′ (contradição)</th></tr>
+    <tr><td class="v">V</td><td class="f">F</td><td class="v">V</td><td class="f">F</td></tr>
+    <tr><td class="f">F</td><td class="v">V</td><td class="v">V</td><td class="f">F</td></tr>
+  </table>
+  <p style="margin-top:-0.5rem">Repare que a coluna "A ∨ A′" é sempre V e a coluna "A ∧ A′" é sempre F, não importa o valor de A. É exatamente isso que torna a primeira uma tautologia e a segunda uma contradição: o resultado não depende do valor das partes.</p>
+
+  <h3>Outros exemplos</h3>
+  <p><span class="sym">(A ∧ B) → (A ∨ B)</span> é uma tautologia:</p>
+  <details class="demo">
+    <summary>Ver tabela-verdade</summary>
+    <div class="reveal">
+      <table class="truth">
+        <tr><th>A</th><th>B</th><th>A ∧ B</th><th>A ∨ B</th><th>(A ∧ B) → (A ∨ B)</th></tr>
+        <tr><td class="v">V</td><td class="v">V</td><td class="v">V</td><td class="v">V</td><td class="v">V</td></tr>
+        <tr><td class="v">V</td><td class="f">F</td><td class="f">F</td><td class="v">V</td><td class="v">V</td></tr>
+        <tr><td class="f">F</td><td class="v">V</td><td class="f">F</td><td class="v">V</td><td class="v">V</td></tr>
+        <tr><td class="f">F</td><td class="f">F</td><td class="f">F</td><td class="f">F</td><td class="v">V</td></tr>
+      </table>
+      <p>A última coluna é sempre V: sempre que A e B são V ao mesmo tempo, pelo menos uma delas também é V, então o condicional nunca falha.</p>
+    </div>
+  </details>
+
+  <h2>5. De Morgan na prática e um algoritmo para testar tautologias</h2>
+  <p>O mesmo "e"/"ou não" do De Morgan (seção 2) aparece em código de verdade. Primeiro, o código com <code>and</code>:</p>
+  <pre>tenho_18_anos = <span class="bool">True</span>
+trouxe_documentacao = <span class="bool">True</span>
+
+<span class="kw">if</span> tenho_18_anos <span class="kw">and</span> trouxe_documentacao:
+    <span class="fn">print</span>(<span class="str">"Posso entrar na festa"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"Não posso entrar na festa"</span>)</pre>
+  <p>Agora a mesma lógica, mas usando a versão com <code>not</code> e <code>or</code> (De Morgan aplicado na condição contrária, "ser barrado"):</p>
+  <pre>tenho_18_anos = <span class="bool">True</span>
+trouxe_documentacao = <span class="bool">True</span>
+
+<span class="kw">if</span> <span class="kw">not</span> tenho_18_anos <span class="kw">or</span> <span class="kw">not</span> trouxe_documentacao:
+    <span class="fn">print</span>(<span class="str">"Não posso entrar na festa"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"Posso entrar na festa"</span>)</pre>
+
+  <p>Para saber se uma proposição composta é sempre verdadeira, basta testar todas as combinações possíveis de V/F das letras envolvidas. Isso é um <strong>algoritmo</strong>: uma sequência de passos que sempre resolve o problema, testando uma lista finita de valores até o fim.</p>
+
+  <p>Um exemplo direto de tautologia (<span class="sym">A ∨ A′</span>) em código:</p>
+  <pre>esta_chovendo = <span class="bool">False</span>
+
+<span class="kw">if</span> esta_chovendo <span class="kw">or</span> <span class="kw">not</span> esta_chovendo:
+    <span class="fn">print</span>(<span class="str">"Isso SEMPRE vai imprimir! (Tautologia)"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"Este bloco nunca, jamais será executado."</span>)</pre>
+  <p>Não importa o valor de <code>esta_chovendo</code>: o <code>if</code> é sempre verdadeiro, então o bloco do <code>else</code> é código morto, nunca roda.</p>
+
+  <div class="card tip">
+    <strong>Isso NÃO é um algoritmo:</strong>
+    <pre style="margin:0.6rem 0 0"><span class="kw">while</span> <span class="bool">True</span>:
+    <span class="fn">print</span>(<span class="str">"Executando..."</span>)</pre>
+    <p style="margin:0.6rem 0 0">Esse laço nunca para, então nunca "resolve o problema". Um algoritmo precisa terminar depois de um número finito de passos.</p>
+  </div>
+
+  <p>As duas versões do código acima imprimem sempre a mesma coisa, para qualquer valor de <code>tenho_18_anos</code> e <code>trouxe_documentacao</code>: é a lei de De Morgan garantindo que as duas condições são equivalentes.</p>
+
+  <h2>Exercícios</h2>
+  <ol class="exercises">
+    <li>
+      Das frases abaixo, quais são proposições (podem ser julgadas V ou F)?<br>
+      a) "Dois é um número primo." &nbsp; b) "Ele é muito alto." &nbsp; c) "O jogo termina às 16h."
+      <details class="answer">
+        <summary>Ver resposta</summary>
+        <div class="reveal">
+          <table class="truth">
+            <tr><th style="text-align:left">Frase</th><th>É proposição?</th></tr>
+            <tr><td style="text-align:left">a) "Dois é um número primo."</td><td class="v">Sim</td></tr>
+            <tr><td style="text-align:left">b) "Ele é muito alto."</td><td class="f">Não</td></tr>
+            <tr><td style="text-align:left">c) "O jogo termina às 16h."</td><td class="v">Sim</td></tr>
+          </table>
+          <p style="margin:0.6rem 0 0">(a) e (c) dá pra julgar V ou F. (b) não é proposição, porque não sabemos quem é "ele".</p>
+        </div>
+      </details>
+    </li>
+    <li>
+      Considerando A = verdadeira e B = falsa, qual o valor lógico de <span class="sym">A ∧ B</span>, <span class="sym">A ∨ B</span> e <span class="sym">A → B</span>?
+      <details class="answer">
+        <summary>Ver resposta</summary>
+        <div class="reveal">
+          <p style="margin:0 0 0.7rem"><strong>A ∧ B = <span class="f">F</span></strong><br>Conjunção precisa das duas serem V. Aqui B é F, então falha.</p>
+          <p style="margin:0 0 0.7rem"><strong>A ∨ B = <span class="v">V</span></strong><br>Disjunção só precisa de uma V. A já é V, então basta.</p>
+          <p style="margin:0"><strong>A → B = <span class="f">F</span></strong><br>É o único caso falso do condicional: A verdadeira levando a B falsa.</p>
+        </div>
+      </details>
+    </li>
+    <li>
+      Escreva a negação correta de "Pedro é alto e magro" usando a lei de De Morgan.
+      <details class="answer">
+        <summary>Ver resposta</summary>
+        <div class="reveal">
+          <ul style="margin:0; padding-left:1.2rem">
+            <li>Frase original: "Pedro é alto e magro" (A ∧ B)</li>
+            <li>Negação pela lei de De Morgan: "Pedro não é alto ou não é magro" (A′ ∨ B′)</li>
+            <li>Errado: "Pedro é baixo e gordo" (isso afirma demais, não é o que a negação diz)</li>
+          </ul>
+        </div>
+      </details>
+    </li>
+    <li>
+      Complete a tabela-verdade de <span class="sym">A ∨ B′</span> (B′ é a negação de B) para as 4 combinações de A e B.
+      <details class="answer">
+        <summary>Ver resposta</summary>
+        <div class="reveal">
+          <table class="truth">
+            <tr><th>A</th><th>B</th><th>B′</th><th>A ∨ B′</th></tr>
+            <tr><td class="v">V</td><td class="v">V</td><td class="f">F</td><td class="v">V</td></tr>
+            <tr><td class="v">V</td><td class="f">F</td><td class="v">V</td><td class="v">V</td></tr>
+            <tr><td class="f">F</td><td class="v">V</td><td class="f">F</td><td class="f">F</td></tr>
+            <tr><td class="f">F</td><td class="f">F</td><td class="v">V</td><td class="v">V</td></tr>
+          </table>
+          <p style="margin:0.6rem 0 0">Calcule B′ primeiro, depois faça o "ou" com A.</p>
+        </div>
+      </details>
+    </li>
+    <li>
+      Escreva em Python uma condição que seja uma tautologia, seguindo o exemplo <code>esta_chovendo or not esta_chovendo</code> da seção 5, mas usando a variável <code>esta_de_folga</code>. Depois, use a lei de De Morgan para escrever, com <code>not</code> e <code>and</code>, a versão equivalente de <code>if pagou or confirmou:</code> (testando "não entra" em vez de "entra").
+      <details class="answer">
+        <summary>Ver resposta</summary>
+        <div class="reveal">
+          <p style="margin:0 0 0.6rem"><strong>Tautologia com <code>esta_de_folga</code>:</strong></p>
+          <pre style="margin:0 0 0.8rem">esta_de_folga = <span class="bool">True</span>
+
+<span class="kw">if</span> esta_de_folga <span class="kw">or</span> <span class="kw">not</span> esta_de_folga:
+    <span class="fn">print</span>(<span class="str">"Sempre imprime"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"Nunca roda"</span>)</pre>
+          <p style="margin:0 0 0.8rem">Não importa se <code>esta_de_folga</code> é <code class="v">True</code> ou <code class="f">False</code>: o <code>if</code> é sempre verdadeiro.</p>
+          <p style="margin:0 0 0.4rem"><strong>Original:</strong></p>
+          <pre style="margin:0 0 0.8rem"><span class="kw">if</span> pagou <span class="kw">or</span> confirmou:
+    <span class="fn">print</span>(<span class="str">"Entra"</span>)</pre>
+          <p style="margin:0 0 0.4rem"><strong>Equivalente com De Morgan (testando "não entra"):</strong></p>
+          <pre style="margin:0"><span class="kw">if</span> <span class="kw">not</span> pagou <span class="kw">and</span> <span class="kw">not</span> confirmou:
+    <span class="fn">print</span>(<span class="str">"Não entra"</span>)</pre>
+          <p style="margin:0.6rem 0 0">(A ∨ B)′ ⇔ A′ ∧ B′: negar "pagou ou confirmou" é "não pagou e não confirmou", o mesmo padrão do exemplo da seção 5.</p>
+        </div>
+      </details>
+    </li>
+  </ol>
+
+  <footer class="nav">
+    <a class="back" href="../mapa-aulas.html">&larr; Voltar ao mapa de aulas</a>
+  </footer>
+
+</div>

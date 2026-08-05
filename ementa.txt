@@ -1,0 +1,22 @@
+Disciplina: Matemática Discreta
+
+Ementa: Lógica de Programação e Métodos de Prova. Lógica Proposicional: Conectivos, Tabelas-verdade e Simplificação de expressões lógicas. Predicados e Quantificadores: Uso básico em consultas e regras de negócio. Indução (intuitiva): Aplicação à recursividade e entendimento do funcionamento de algoritmos.
+
+Álgebra Booleana e Lógica Digital, Portas Lógicas: AND, OR, NOT, XOR.
+
+Minimização: Mapas de Karnaugh (como escrever a mesma lógica gastando menos processamento).  Teoria dos Conjuntos e Álgebra Relacional
+
+Conceitos: Operações (União, Intersecção, Diferença), Conjunto das Partes e Produto Cartesiano.
+
+ Análise Combinatória Contagem: Arranjos, Permutações e Combinações.
+
+Complexidade (Big O) Análise de Algoritmos: Introdução à Notação Big O (O(n), O(log n), O(n^2)). Como prever se o seu código vai travar com 1 milhão de usuários.
+
+Estruturas de Dados em Grafos e Árvores Grafos: Representações (Matriz vs Lista de Adjacência), busca em largura (BFS) e profundidade (DFS).
+
+Árvores: Árvores binárias de busca, árvores de decisão (Machine Learning) e estruturas de diretórios. Algoritmos de Caminho: Introdução ao algoritmo de Dijkstra (menor caminho).
+
+Teoria dos Números e Criptografia
+
+Aritmética Modular: Operador % (mod), números primos e Algoritmo de Euclides (MDC). Aplicações: Uso em hashing e geração de identificadores.
+
