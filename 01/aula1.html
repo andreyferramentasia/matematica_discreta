@@ -248,22 +248,27 @@
   <h2>5. Lei De Morgan na prática e um algoritmo para testar tautologias e Contradição</h2>
 
   <h3>5.1 Lei de Morgan em código</h3>
-  <p>O mesmo "e"/"ou não" do De Morgan (seção 2) aparece em código de verdade. Primeiro, o código com <code>and</code>:</p>
-  <pre>tenho_18_anos = <span class="bool">True</span>
-trouxe_documentacao = <span class="bool">True</span>
+  <p>Em uma loja, o cliente só ganha frete grátis se a compra passar de R$100 e ele for cliente VIP. O mesmo "e"/"ou não" do De Morgan (seção 2) aparece em código de verdade. Primeiro, o código com <code>and</code>:</p>
+  <pre>valor_acima_100 = <span class="bool">False</span>
+cliente_vip = <span class="bool">True</span>
 
-<span class="kw">if</span> tenho_18_anos <span class="kw">and</span> trouxe_documentacao:
-    <span class="fn">print</span>(<span class="str">"Posso entrar na festa:"</span>, tenho_18_anos <span class="kw">and</span> trouxe_documentacao)
-<span class="kw">else</span>:
-    <span class="fn">print</span>(<span class="str">"Não posso entrar na festa:"</span>, tenho_18_anos <span class="kw">and</span> trouxe_documentacao)</pre>
-  <p>Agora a mesma lógica, mas usando a versão com <code>not</code> e <code>or</code> (De Morgan aplicado na condição contrária, "ser barrado"):</p>
-  <pre>tenho_18_anos = <span class="bool">True</span>
-trouxe_documentacao = <span class="bool">True</span>
+frete_gratis = valor_acima_100 <span class="kw">and</span> cliente_vip
 
-<span class="kw">if</span> <span class="kw">not</span> tenho_18_anos <span class="kw">or</span> <span class="kw">not</span> trouxe_documentacao:
-    <span class="fn">print</span>(<span class="str">"Não posso entrar na festa:"</span>, <span class="kw">not</span> tenho_18_anos <span class="kw">or</span> <span class="kw">not</span> trouxe_documentacao)
+<span class="kw">if</span> frete_gratis:
+    <span class="fn">print</span>(<span class="str">"Ganhou frete grátis!"</span>)
+    <span class="fn">print</span>(frete_gratis)
 <span class="kw">else</span>:
-    <span class="fn">print</span>(<span class="str">"Posso entrar na festa:"</span>, <span class="kw">not</span> tenho_18_anos <span class="kw">or</span> <span class="kw">not</span> trouxe_documentacao)</pre>
+    <span class="fn">print</span>(<span class="str">"Paga o frete."</span>)</pre>
+  <p>Agora a mesma lógica, mas usando a versão com <code>not</code> e <code>or</code> (De Morgan aplicado na condição contrária, "pagar o frete"):</p>
+  <pre>valor_acima_100 = <span class="bool">False</span>
+cliente_vip = <span class="bool">True</span>
+
+sem_frete_gratis = <span class="kw">not</span> valor_acima_100 <span class="kw">or</span> <span class="kw">not</span> cliente_vip
+
+<span class="kw">if</span> sem_frete_gratis:
+    <span class="fn">print</span>(<span class="str">"Paga o frete."</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"Ganhou frete grátis!"</span>)</pre>
 
   <h3>5.2 O que é um algoritmo</h3>
   <p>Para saber se uma proposição composta é sempre verdadeira, basta testar todas as combinações possíveis de V/F das letras envolvidas. Isso é um <strong>algoritmo</strong>: uma sequência de passos que sempre resolve o problema, testando uma lista finita de valores até o fim.</p>
@@ -294,7 +299,7 @@ trouxe_documentacao = <span class="bool">True</span>
     <p style="margin:0.6rem 0 0">Esse laço nunca para, então nunca "resolve o problema". Um algoritmo precisa terminar depois de um número finito de passos.</p>
   </div>
 
-  <p>As duas versões do código acima imprimem sempre a mesma coisa, para qualquer valor de <code>tenho_18_anos</code> e <code>trouxe_documentacao</code>: é a lei de De Morgan garantindo que as duas condições são equivalentes.</p>
+  <p>As duas versões do código acima imprimem sempre a mesma coisa, para qualquer valor de <code>valor_acima_100</code> e <code>cliente_vip</code>: é a lei de De Morgan garantindo que as duas condições são equivalentes.</p>
 
   <h2>Exercícios</h2>
   <ol class="exercises">
