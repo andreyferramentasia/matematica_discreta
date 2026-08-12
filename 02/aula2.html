@@ -1,0 +1,215 @@
+<meta charset="UTF-8">
+<title>Aula 2: Técnicas de Demonstração | Matemática Discreta</title>
+<link rel="stylesheet" href="../assets/estilo.css">
+
+<div class="page">
+
+  <a class="back" href="../index.html">&larr; Voltar ao mapa de aulas</a>
+
+  <header class="masthead">
+    <p class="eyebrow">Matemática Discreta · Aula 02</p>
+    <h1>Técnicas de Demonstração</h1>
+    <p class="sub">Contraexemplo, demonstração por exaustão, demonstração direta, por contraposição e por absurdo. (Gersting, cap. 2.1)</p>
+  </header>
+
+  <h2>1. Conjectura, contraexemplo e prova</h2>
+  <p>Uma <strong>conjectura</strong> é uma afirmação P &rarr; Q que ainda não sabemos se é verdadeira. Alguns casos sugerindo que ela vale (raciocínio indutivo) não provam nada; só um <strong>contraexemplo</strong> ou uma demonstração completa (raciocínio dedutivo) decide.</p>
+  <div class="card">
+    <p style="margin:0"><strong>Dia a dia:</strong> conhecer três pessoas simpáticas de uma cidade não prova que "todo mundo lá é simpático". Uma única pessoa mal-educada já derruba a afirmação.</p>
+  </div>
+  <p><strong>Exemplo:</strong> a conjectura "para todo inteiro positivo n, n! &le; n&sup2;" resiste até n = 3, mas falha em n = 4:</p>
+  <table class="truth">
+    <tr><th>n</th><th>n!</th><th>n&sup2;</th><th>n! &le; n&sup2;</th></tr>
+    <tr><td>1</td><td>1</td><td>1</td><td class="v">sim</td></tr>
+    <tr><td>2</td><td>2</td><td>4</td><td class="v">sim</td></tr>
+    <tr><td>3</td><td>6</td><td>9</td><td class="v">sim</td></tr>
+    <tr><td>4</td><td>24</td><td>16</td><td class="f">não</td></tr>
+  </table>
+  <p style="text-align:center; color:var(--accent); font-weight:600; margin:0.6rem 0 0">Um único contraexemplo (n = 4) já derruba a conjectura inteira.</p>
+  <pre><span class="kw">def</span> <span class="fn">fatorial</span>(n):
+    resultado = 1
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(1, n + 1):
+        resultado *= i
+    <span class="kw">return</span> resultado
+
+<span class="kw">for</span> n <span class="kw">in</span> <span class="fn">range</span>(1, 5):
+    <span class="fn">print</span>(n, <span class="fn">fatorial</span>(n) <= n ** 2)</pre>
+
+  <h2>2. Demonstração por exaustão</h2>
+  <p class="idea" style="color:var(--accent); font-weight:600; margin-bottom:0.4rem">Ideia: com número finito de casos, teste todos.</p>
+  <p>É a mesma lógica de conferir a lista de chamada de uma turma pequena: aluno por aluno, sem fórmula.</p>
+  <p><strong>Exemplo:</strong> "se um inteiro entre 1 e 20 for divisível por 6, também é divisível por 3." Só 20 casos, então basta testar cada um:</p>
+  <pre><span class="kw">for</span> n <span class="kw">in</span> <span class="fn">range</span>(1, 21):
+    <span class="kw">if</span> n % 6 == 0:
+        <span class="fn">print</span>(n, <span class="str">"é divisível por 6 e por 3:"</span>, n % 3 == 0)</pre>
+  <div class="card tip">
+    <strong>Variante:</strong> demonstração por casos, quebrar a hipótese em poucas partes que cobrem tudo (ex.: "x par" ou "x ímpar") e provar cada parte.
+  </div>
+
+  <h2>3. Demonstração direta</h2>
+  <p class="idea" style="color:var(--accent); font-weight:600; margin-bottom:0.4rem">Ideia: suponha P, deduza Q passo a passo.</p>
+  <p>A abordagem padrão, a primeira a tentar. É o encadeamento de "se está chovendo, a rua fica molhada": um fato leva ao outro sem pular etapas.</p>
+  <p><strong>Exemplo:</strong> a soma de dois inteiros pares é par.</p>
+  <details class="demo">
+    <summary>Ver demonstração</summary>
+    <div class="reveal">
+      <p style="text-align:center; font-family:var(--font-data); margin:0.35rem 0">x = 2m &nbsp;&nbsp; y = 2n</p>
+      <p style="text-align:center; font-family:var(--font-data); margin:0.35rem 0">x + y = 2m + 2n = 2(m + n)</p>
+      <p style="text-align:center; font-family:var(--font-data); margin:0.35rem 0">x + y = 2k, &nbsp; k = m + n inteiro</p>
+      <p style="text-align:center; color:var(--accent); font-weight:600; margin:0.6rem 0 0">Logo, x + y é par.</p>
+    </div>
+  </details>
+  <pre><span class="kw">def</span> <span class="fn">eh_par</span>(n):
+    <span class="kw">return</span> n % 2 == 0
+
+<span class="kw">def</span> <span class="fn">verificar</span>(n, m):
+  <span class="kw">if</span> <span class="fn">eh_par</span>(n) <span class="kw">and</span> <span class="fn">eh_par</span>(m):
+    <span class="fn">print</span>(n + m)
+    <span class="fn">print</span>(<span class="fn">eh_par</span>(n + m))
+  <span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"algum dos numeros nao e par"</span>)
+    <span class="kw">return</span> <span class="bool">False</span>
+
+<span class="fn">verificar</span>(4, 6)
+<span class="fn">verificar</span>(3, 6)</pre>
+
+  <h2>4. Demonstração por contraposição</h2>
+  <p class="idea" style="color:var(--accent); font-weight:600; margin-bottom:0.4rem">Ideia: prove Q&prime; &rarr; P&prime; em vez de P &rarr; Q.</p>
+  <p>Use quando a negação da conclusão dá mais informação que a hipótese original. É o mecânico testando "se o motor não liga, a bateria está descarregada" em vez de "se a bateria carrega, o motor liga": mesma ideia, mais fácil de checar.</p>
+  <p><strong>Exemplo:</strong> se n&sup2; for ímpar, então n é ímpar.</p>
+  <details class="demo">
+    <summary>Ver demonstração</summary>
+    <div class="reveal">
+      <p style="text-align:center; margin:0 0 0.5rem">Contrapositiva: n par &rarr; n&sup2; par</p>
+      <p style="text-align:center; font-family:var(--font-data); margin:0.35rem 0">n = 2m</p>
+      <p style="text-align:center; font-family:var(--font-data); margin:0.35rem 0">n&sup2; = (2m)&sup2; = 4m&sup2; = 2(2m&sup2;)</p>
+      <p style="text-align:center; color:var(--accent); font-weight:600; margin:0.6rem 0 0">Logo, n&sup2; é par, e a conjectura original vale.</p>
+    </div>
+  </details>
+  <pre><span class="kw">def</span> <span class="fn">eh_par</span>(n):
+    <span class="kw">return</span> n % 2 == 0
+
+<span class="kw">for</span> n <span class="kw">in</span> <span class="fn">range</span>(1, 11):
+    <span class="fn">print</span>(n, <span class="kw">not</span> <span class="fn">eh_par</span>(n), <span class="kw">not</span> <span class="fn">eh_par</span>(n ** 2))</pre>
+  <div class="card tip">
+    <strong>Não confunda com recíproca.</strong> Contrapositiva de A &rarr; B é B&prime; &rarr; A&prime; (equivalente). Recíproca é B &rarr; A, e pode ser falsa: "a &gt; 5 &rarr; a &gt; 2" é verdadeira, mas "a &gt; 2 &rarr; a &gt; 5" é falsa (a = 3).
+  </div>
+
+  <h2>5. Demonstração por absurdo</h2>
+  <p class="idea" style="color:var(--accent); font-weight:600; margin-bottom:0.4rem">Ideia: suponha P e Q&prime; juntos, chegue numa contradição.</p>
+  <p>Ideal para provar que algo <strong>não</strong> existe. É o álibi: "se eu estivesse na festa, alguém teria me visto; ninguém viu; logo eu não estava lá."</p>
+  <p><strong>Exemplo simples:</strong> não é possível estar na água e pegando fogo ao mesmo tempo.</p>
+  <details class="demo">
+    <summary>Ver demonstração</summary>
+    <div class="reveal">
+      <p style="text-align:center; margin:0 0 0.5rem">Suponha P: "estar na água" e Q&prime;: "estar pegando fogo", os dois ao mesmo tempo.</p>
+      <p style="text-align:center; font-family:var(--font-data); margin:0.35rem 0">esta_na_agua = True &nbsp;e&nbsp; esta_pegando_fogo = True</p>
+      <p style="text-align:center; font-family:var(--font-data); margin:0.35rem 0">água apaga fogo &nbsp;&rarr;&nbsp; as duas coisas não podem valer juntas</p>
+      <p style="text-align:center; color:var(--accent); font-weight:600; margin:0.6rem 0 0">Contradição! Logo, não é possível estar na água e pegando fogo ao mesmo tempo.</p>
+    </div>
+  </details>
+  <pre>esta_na_agua = <span class="bool">True</span>
+esta_pegando_fogo = <span class="bool">False</span>
+
+contradicao = esta_na_agua <span class="kw">and</span> esta_pegando_fogo
+<span class="com"># contradicao = False</span>
+
+<span class="kw">if</span> contradicao:
+    <span class="fn">print</span>(<span class="str">"Contradição!"</span>)
+    <span class="fn">print</span>(<span class="str">"não é possível estar na água e pegando fogo ao mesmo tempo"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"É possível"</span>)</pre>
+
+  <h2>6. Resumo das técnicas</h2>
+  <table class="truth">
+    <tr><th style="text-align:left">Técnica</th><th style="text-align:left">Você supõe</th><th style="text-align:left">Quando usar</th></tr>
+    <tr><td style="text-align:left">Exaustão</td><td style="text-align:left">nada, testa cada caso</td><td style="text-align:left">número finito de casos</td></tr>
+    <tr><td style="text-align:left">Direta</td><td style="text-align:left">P, deduz Q</td><td style="text-align:left">abordagem padrão</td></tr>
+    <tr><td style="text-align:left">Contraposição</td><td style="text-align:left">Q&prime;, deduz P&prime;</td><td style="text-align:left">Q&prime; dá mais informação que P</td></tr>
+    <tr><td style="text-align:left">Absurdo</td><td style="text-align:left">P e Q&prime;, deduz contradição</td><td style="text-align:left">provar que algo não existe</td></tr>
+  </table>
+
+  <h2>Exercícios</h2>
+  <ol class="exercises">
+    <li>
+      <strong>Conjectura e contraexemplo:</strong> escreva um código Python simples, com <code>for</code>, igual ao exemplo da seção 1, que teste a conjectura "a soma de dois números pares positivos até 10 é sempre maior que 10" e mostre um contraexemplo.
+      <details class="answer">
+        <summary>Ver resposta</summary>
+        <div class="reveal">
+          <pre style="margin:0"><span class="kw">for</span> a <span class="kw">in</span> <span class="fn">range</span>(2, 11, 2):
+    <span class="kw">for</span> b <span class="kw">in</span> <span class="fn">range</span>(2, 11, 2):
+        <span class="kw">if</span> a + b &lt;= 10:
+            <span class="fn">print</span>(a, <span class="str">"+"</span>, b, <span class="str">"="</span>, a + b, <span class="str">"não é maior que 10"</span>)</pre>
+        </div>
+      </details>
+    </li>
+    <li>
+      <strong>Demonstração por exaustão:</strong> escreva um código Python, igual ao exemplo da seção 2, que teste por exaustão a conjectura "para todo inteiro n com 1 &le; n &le; 4, n&sup2; &le; 4n".
+      <details class="answer">
+        <summary>Ver resposta</summary>
+        <div class="reveal">
+          <pre style="margin:0"><span class="kw">for</span> n <span class="kw">in</span> <span class="fn">range</span>(1, 5):
+    <span class="fn">print</span>(n, n ** 2, 4 * n, n ** 2 &lt;= 4 * n)</pre>
+        </div>
+      </details>
+    </li>
+    <li>
+      <strong>Demonstração direta:</strong> escreva uma função Python, igual ao estilo da seção 3, que verifique se pelo menos um dos dois números é par e, nesse caso, mostre que o produto deles também é par.
+      <details class="answer">
+        <summary>Ver resposta</summary>
+        <div class="reveal">
+          <pre style="margin:0"><span class="kw">def</span> <span class="fn">eh_par</span>(n):
+    <span class="kw">return</span> n % 2 == 0
+
+<span class="kw">def</span> <span class="fn">verificar_produto</span>(n, m):
+  <span class="kw">if</span> <span class="fn">eh_par</span>(n) <span class="kw">or</span> <span class="fn">eh_par</span>(m):
+    <span class="fn">print</span>(n * m)
+    <span class="fn">print</span>(<span class="fn">eh_par</span>(n * m))
+  <span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"nenhum dos numeros e par"</span>)
+    <span class="kw">return</span> <span class="bool">False</span>
+
+<span class="fn">verificar_produto</span>(4, 5)
+<span class="fn">verificar_produto</span>(3, 5)</pre>
+        </div>
+      </details>
+    </li>
+    <li>
+      <strong>Demonstração por contraposição:</strong> a conjectura é "se n&sup2; for divisível por 3, então n é divisível por 3". A contrapositiva é "se n não for divisível por 3, então n&sup2; não é divisível por 3". Escreva um código Python, igual ao exemplo da seção 4, que teste a contrapositiva para vários valores de n.
+      <details class="answer">
+        <summary>Ver resposta</summary>
+        <div class="reveal">
+          <pre style="margin:0"><span class="kw">def</span> <span class="fn">divisivel_por_3</span>(n):
+    <span class="kw">return</span> n % 3 == 0
+
+<span class="kw">for</span> n <span class="kw">in</span> <span class="fn">range</span>(1, 11):
+    <span class="fn">print</span>(n, <span class="kw">not</span> <span class="fn">divisivel_por_3</span>(n), <span class="kw">not</span> <span class="fn">divisivel_por_3</span>(n ** 2))</pre>
+        </div>
+      </details>
+    </li>
+    <li>
+      <strong>Demonstração por absurdo:</strong> a conjectura é "não é possível uma lâmpada estar ligada e desligada ao mesmo tempo". Escreva um código Python, igual ao exemplo da seção 5, com duas variáveis booleanas (<code>lampada_ligada</code> e <code>lampada_desligada</code>) e um <code>if</code> que verifique a contradição.
+      <details class="answer">
+        <summary>Ver resposta</summary>
+        <div class="reveal">
+          <pre style="margin:0">lampada_ligada = <span class="bool">True</span>
+lampada_desligada = <span class="bool">False</span>
+
+contradicao = lampada_ligada <span class="kw">and</span> lampada_desligada
+<span class="com"># contradicao = False</span>
+
+<span class="kw">if</span> contradicao:
+    <span class="fn">print</span>(<span class="str">"Contradição!"</span>)
+    <span class="fn">print</span>(<span class="str">"não é possível a lâmpada estar ligada e desligada ao mesmo tempo"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"É possível"</span>)</pre>
+        </div>
+      </details>
+    </li>
+  </ol>
+
+  <footer class="nav">
+    <a class="back" href="../index.html">&larr; Voltar ao mapa de aulas</a>
+  </footer>
+
+</div>
