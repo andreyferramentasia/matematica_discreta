@@ -1,0 +1,277 @@
+<meta charset="UTF-8">
+<title>Aula 3: Quantificadores, Predicados e Validade | Matemática Discreta</title>
+<link rel="stylesheet" href="../assets/estilo.css">
+<style>
+  .dots { display: flex; gap: 0.45rem; margin: 0.7rem 0 0.3rem; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; background: var(--border); flex: none; }
+  .dot.on { background: var(--ok); }
+  .dots-label { font-size: 0.78rem; color: var(--ink-2); margin: 0.8rem 0 0; }
+  .dots-note { margin: 0.2rem 0 0; font-size: 0.85rem; color: var(--ink-2); }
+  table.truth td[style*="text-align:left"], table.truth th[style*="text-align:left"] { text-align: left; }
+  .claim {
+    border-left: 3px solid var(--accent);
+    padding: 0.5rem 0 0.5rem 1rem;
+    margin: 0.6rem 0;
+    font-weight: 600;
+  }
+  table.truth.compact tr.bad-row td:last-child { background: rgba(171,58,44,0.08); }
+  table.truth.compact tr:not(.bad-row) td:last-child { background: rgba(26,122,76,0.08); }
+  .connective-row table.truth.compact { font-size: 0.82rem; min-width: 0; }
+  .connective-row table.truth.compact th,
+  .connective-row table.truth.compact td { padding: 0.4rem 0.6rem; white-space: normal; }
+  .speech-bubble {
+    position: relative;
+    display: table;
+    margin: 0.9rem auto 1.7rem;
+    max-width: 26rem;
+    background: var(--content-bg);
+    border: 2px solid var(--accent);
+    border-radius: 18px;
+    padding: 0.75rem 1.3rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--ink);
+  }
+  .speech-bubble::after {
+    content: "";
+    position: absolute;
+    left: 2.4rem;
+    bottom: -15px;
+    border-width: 15px 11px 0;
+    border-style: solid;
+    border-color: var(--accent) transparent transparent;
+  }
+  .speech-bubble::before {
+    content: "";
+    position: absolute;
+    left: 2.4rem;
+    bottom: -11.5px;
+    border-width: 12px 8px 0;
+    border-style: solid;
+    border-color: var(--content-bg) transparent transparent;
+    z-index: 1;
+  }
+</style>
+
+<div class="page">
+
+  <a class="back" href="../index.html">&larr; Voltar ao mapa de aulas</a>
+
+  <header class="masthead">
+    <p class="eyebrow">Matemática Discreta · Aula 03</p>
+    <h1>Quantificadores, Predicados e Validade</h1>
+    <p class="sub">Quantificador universal e existencial, predicados, interpretação, simbolização e checagem de validade. (Gersting, cap. 1.3)</p>
+  </header>
+
+  <h2>1. Predicado</h2>
+  <div class="card">
+    <p style="margin:0"><strong>Já vimos essa palavra no português:</strong> em "João está cansado", o sujeito é João e o predicado é "está cansado", aquilo que se declara sobre o sujeito.</p>
+  </div>
+  <table class="truth">
+    <tr><th style="text-align:left">Português</th><th style="text-align:left">Matemática</th></tr>
+    <tr><td style="text-align:left">Sujeito: João</td><td style="text-align:left">A variável x</td></tr>
+    <tr><td style="text-align:left">Predicado: "está cansado"</td><td style="text-align:left; font-family:var(--font-data)">P(x): "x está cansado"</td></tr>
+  </table>
+  <p>A ideia é a mesma: o predicado é o que se declara sobre x. A diferença é que, na matemática, essa declaração precisa ficar V ou F assim que x vira algo específico.</p>
+  <p>"Para todo x, x &gt; 0" não dá pra simbolizar só com letra de proposição e conectivo (aula 1). Falta um jeito de descrever uma propriedade que depende de x: o <strong>predicado</strong>.</p>
+  <ul>
+    <li>P(x) descreve uma propriedade de x.</li>
+    <li>Sozinho, P(x) <strong>não tem valor lógico</strong>: depende de quem é x.</li>
+    <li>Só vira proposição quando x recebe um valor, ou é amarrado por um quantificador.</li>
+  </ul>
+  <table class="truth">
+    <tr><th style="text-align:left">Expressão</th><th>Tipo</th><th>Valor lógico</th></tr>
+    <tr><td style="text-align:left">P(x): "x é par"</td><td>Predicado</td><td>indefinido</td></tr>
+    <tr><td style="text-align:left">P(4)</td><td>Proposição</td><td class="v">V</td></tr>
+    <tr><td style="text-align:left">P(5)</td><td>Proposição</td><td class="f">F</td></tr>
+  </table>
+
+  <h2>2. Quantificador universal e existencial</h2>
+  <p>Dizem <strong>quantos</strong> elementos de um domínio têm a propriedade do predicado.</p>
+
+  <div class="connective-row">
+    <div class="card connective">
+      <div class="connective-text">
+        <h3><span class="sym">(&forall;x)P(x)</span> · Universal · "para todo x"</h3>
+        <p class="idea">Ideia: vale para cada elemento, sem exceção.</p>
+        <p>Chamada de turma: basta <strong>um</strong> aluno faltando para "todos vieram" virar falso.</p>
+        <p class="dots-label">5 alunos, todos vieram:</p>
+        <div class="dots"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></div>
+        <p class="dots-note">Todos verdes &rarr; (&forall;x)P(x) é <span class="v">V</span>.</p>
+      </div>
+    </div>
+    <div class="card connective">
+      <div class="connective-text">
+        <h3><span class="sym">(&exist;x)P(x)</span> · Existencial · "existe x"</h3>
+        <p class="idea">Ideia: basta um elemento cumprir.</p>
+        <p>Vaga de estacionamento: não precisa que todas estejam livres, só <strong>achar uma</strong>.</p>
+        <p class="dots-label">5 vagas, uma livre:</p>
+        <div class="dots"><span class="dot"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <p class="dots-note">Um verde já basta &rarr; (&exist;x)P(x) é <span class="v">V</span>.</p>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin:1.2rem 0 0.4rem"><strong>O domínio muda o resultado</strong>, mesmo com o mesmo predicado:</p>
+  <table class="truth">
+    <tr><th style="text-align:left">Domínio</th><th>(&forall;x)(x &gt; 0)</th></tr>
+    <tr><td style="text-align:left">Inteiros positivos</td><td class="v">V</td></tr>
+    <tr><td style="text-align:left">Todos os inteiros</td><td class="f">F</td></tr>
+  </table>
+  <p style="margin-top:-0.5rem; font-size:0.9rem; color:var(--ink-2)">Todo domínio precisa ter pelo menos um elemento: sem isso, "para todo x" não quer dizer nada.</p>
+
+  <h2>3. Interpretação</h2>
+  <p><strong>Fbf</strong> (sigla do inglês <em>well-formed formula</em>, "fórmula bem-formulada") é uma expressão lógica escrita seguindo as regras de sintaxe do sistema, predicados, quantificadores e conectivos usados corretamente. Para uma fbf com predicado ter valor lógico, precisa de uma <strong>interpretação</strong>:</p>
+  <ul>
+    <li><strong>Domínio:</strong> a coleção de objetos, não vazia.</li>
+    <li><strong>Significado</strong> de cada predicado nesse domínio.</li>
+    <li><strong>Valor</strong> de cada constante (a, b, 0, 1...).</li>
+  </ul>
+  <div class="card">
+    <p style="margin:0 0 0.5rem"><strong>Exemplo:</strong></p>
+    <ul style="margin:0">
+      <li><strong>Domínio:</strong> livros da biblioteca.</li>
+      <li><strong>P(x):</strong> "x tem capa vermelha".</li>
+      <li><strong>(&exist;x)P(x):</strong> V se existir pelo menos um livro de capa vermelha na estante.</li>
+    </ul>
+  </div>
+
+  <h2>4. Escopo e variável livre</h2>
+  <p><strong>Escopo</strong>: a parte da fórmula onde o quantificador age (os parênteses depois dele).</p>
+  <div class="card tip">
+    <p style="margin:0 0 0.5rem"><strong>Pergunta para decidir:</strong> existe um &forall; ou &exist; que alcança essa variável?</p>
+    <ul style="margin:0">
+      <li><strong>Sim</strong> &rarr; variável <strong>presa</strong> (ou amarrada).</li>
+      <li><strong>Não</strong> &rarr; variável <strong>livre</strong>.</li>
+    </ul>
+  </div>
+  <p style="margin-top:-0.3rem">Uma fbf com variável livre fica sem valor lógico fixo, até alguém dizer quem ela é.</p>
+  <div class="card">
+    <p style="margin:0; text-align:center; font-family:var(--font-data)">(&forall;x)[Q(x, y) &rarr; (&exist;y)R(x, y)]</p>
+    <p style="margin:0.6rem 0 0"><strong>y em Q(x, y):</strong> livre (nenhum &forall;y ou &exist;y o alcança).<br><strong>y em R(x, y):</strong> presa pelo (&exist;y).</p>
+  </div>
+
+  <h2>5. Simbolização</h2>
+  <table class="truth">
+    <tr><th style="text-align:left">Palavras-chave</th><th>Quantificador</th><th>Conectivo comum</th></tr>
+    <tr><td style="text-align:left">"todo", "para todo", "cada", "qualquer"</td><td>&forall;</td><td>&rarr;</td></tr>
+    <tr><td style="text-align:left">"existe", "algum", "há pelo menos um"</td><td>&exist;</td><td>&and;</td></tr>
+  </table>
+  <p>Com A(x): "x é aluno" e D(x): "x é dedicado":</p>
+  <table class="truth">
+    <tr><th style="text-align:left">Frase</th><th style="text-align:left">Fbf</th></tr>
+    <tr><td style="text-align:left">"Todo aluno é dedicado."</td><td style="text-align:left; font-family:var(--font-data)">(&forall;x)[A(x) &rarr; D(x)]</td></tr>
+    <tr><td style="text-align:left">"Algum aluno é dedicado."</td><td style="text-align:left; font-family:var(--font-data)">(&exist;x)[A(x) &and; D(x)]</td></tr>
+  </table>
+
+  <h3>O truque de "só", "somente" e "apenas"</h3>
+  <div class="card tip">
+    <p style="margin:0">O que vem <strong>depois</strong> dessas palavras vira a <strong>conclusão</strong> do condicional, não a hipótese.</p>
+  </div>
+
+  <div class="card">
+    <p style="margin:0 0 0.5rem"><strong>Aplicando o truque:</strong> "Só <strong>professores</strong> corrigem provas."</p>
+    <table class="truth" style="margin:0.4rem auto">
+      <tr><td style="text-align:left; font-family:var(--font-data)">P(x)</td><td style="text-align:left">"x é professor"</td></tr>
+      <tr><td style="text-align:left; font-family:var(--font-data)">C(x)</td><td style="text-align:left">"x corrige provas"</td></tr>
+    </table>
+    <p style="margin:0.7rem 0 0">Depois de "só" vem "professores": logo P(x) é a <strong>conclusão</strong>, e C(x) é a <strong>hipótese</strong>.</p>
+    <p style="text-align:center; font-family:var(--font-data); margin:0.5rem 0 0">(&forall;x)[C(x) &rarr; P(x)]</p>
+  </div>
+
+  <p class="speech-bubble">Quem quebra a promessa é sempre a pessoa "False"!</p>
+
+  <div class="connective-row">
+    <div class="card connective" style="flex-basis:340px">
+      <div class="connective-text">
+        <h3>Tentativa 1</h3>
+        <p style="margin:0 0 0.4rem">Imagine que alguém prometa:</p>
+        <p class="claim">"Se você é professor, você corrige provas."</p>
+        <p style="margin:0.8rem 0 0.5rem">Agora existem 4 situações:</p>
+        <table class="truth compact" style="margin:0.6rem auto">
+          <tr><th style="text-align:left">Professor?</th><th style="text-align:left">Corrige?</th><th style="text-align:left">Quebrou?</th></tr>
+          <tr><td class="v">&check; Sim</td><td class="v">&check; Sim</td><td>Não</td></tr>
+          <tr class="bad-row"><td class="v">&check; Sim</td><td class="f">&cross; Não</td><td class="f" style="font-weight:700">Sim</td></tr>
+          <tr><td class="f">&cross; Não</td><td class="v">&check; Sim</td><td>Não</td></tr>
+          <tr><td class="f">&cross; Não</td><td class="f">&cross; Não</td><td>Não</td></tr>
+        </table>
+        <p style="margin:0.7rem 0 0; font-size:0.9rem"><strong>Perceba:</strong> a promessa só quebra se alguém for professor e não corrigir. Isso obrigaria <em>todo</em> professor a corrigir provas, mas a frase original não disse isso.</p>
+      </div>
+    </div>
+    <div class="card connective" style="flex-basis:340px">
+      <div class="connective-text">
+        <h3>Tentativa 2</h3>
+        <p style="margin:0 0 0.4rem">Agora inverta, imagine que alguém prometa:</p>
+        <p class="claim">"Se você corrige provas, você é professor."</p>
+        <p class="claim">"Somente professores corrigem provas."</p>
+        <p style="margin:0.8rem 0 0.5rem">As mesmas 4 situações:</p>
+        <table class="truth compact" style="margin:0.6rem auto">
+          <tr><th style="text-align:left">Corrige?</th><th style="text-align:left">Professor?</th><th style="text-align:left">Quebrou?</th></tr>
+          <tr><td class="v">&check; Sim</td><td class="v">&check; Sim</td><td>Não</td></tr>
+          <tr><td class="f">&cross; Não</td><td class="v">&check; Sim</td><td>Não</td></tr>
+          <tr class="bad-row"><td class="v">&check; Sim</td><td class="f">&cross; Não</td><td class="f" style="font-weight:700">Sim</td></tr>
+          <tr><td class="f">&cross; Não</td><td class="f">&cross; Não</td><td>Não</td></tr>
+        </table>
+        <p style="margin:0.7rem 0 0; font-size:0.9rem"><strong>Perceba:</strong> a promessa só quebra se alguém corrigir provas sem ser professor. É exatamente isso que "só professores corrigem provas" quer proibir.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card tip">
+    <p style="margin:0">A tentativa 2 é a que bate com a frase original. Por isso a simbolização certa usa <strong>corrigir como hipótese</strong>: (&forall;x)[C(x) &rarr; P(x)], não (&forall;x)[P(x) &rarr; C(x)].</p>
+  </div>
+
+  <h2>6. Negando quantificadores</h2>
+  <p>Igual à De Morgan da aula 1 (troca &and; por &or;), negar um quantificador troca &forall; por &exist;:</p>
+  <table class="truth">
+    <tr><th style="text-align:left">Fórmula original</th><th style="text-align:left">Negação equivalente</th></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">(&forall;x)P(x)</td><td style="text-align:left; font-family:var(--font-data)">(&exist;x)[P(x)]&prime;</td></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">(&exist;x)P(x)</td><td style="text-align:left; font-family:var(--font-data)">(&forall;x)[P(x)]&prime;</td></tr>
+  </table>
+  <p style="margin-top:-0.3rem; font-size:0.92em; color:var(--ink-2)">Negar "todos os convidados chegaram" não é "nenhum chegou", é "existe um convidado que não chegou".</p>
+  <pre>dominio = [1, 2, 3, 4, 5]
+
+<span class="kw">def</span> <span class="fn">eh_par</span>(x):
+    <span class="kw">return</span> x % 2 == 0
+
+lista = [<span class="fn">eh_par</span>(x) <span class="kw">for</span> x <span class="kw">in</span> dominio]
+lista_neg = [<span class="kw">not</span> <span class="fn">eh_par</span>(x) <span class="kw">for</span> x <span class="kw">in</span> dominio]
+
+<span class="fn">print</span>(lista)
+<span class="fn">print</span>(lista_neg)
+
+<span class="com"># nega (∀x)P(x)</span>
+<span class="fn">print</span>((<span class="kw">not</span> <span class="fn">all</span>(lista)) == <span class="fn">any</span>(lista_neg))
+<span class="com"># nega (∃x)P(x)</span>
+<span class="fn">print</span>((<span class="kw">not</span> <span class="fn">any</span>(lista)) == <span class="fn">all</span>(lista_neg))</pre>
+
+  <h2>7. Validade</h2>
+  <p>Análogo da <strong>tautologia</strong> (aula 1) para fbfs com predicado: é <strong>válida</strong> se for V em <em>todas</em> as interpretações possíveis.</p>
+  <table class="truth">
+    <tr><th style="text-align:left">Aspecto</th><th style="text-align:left">Tautologia</th><th style="text-align:left">Validade</th></tr>
+    <tr><td style="text-align:left">"Sempre V" em...</td><td style="text-align:left">todas as linhas da tabela-verdade</td><td style="text-align:left">todas as interpretações</td></tr>
+    <tr><td style="text-align:left">Quantos casos</td><td style="text-align:left">2<span class="sym">ⁿ</span> (finito)</td><td style="text-align:left">infinitos</td></tr>
+    <tr><td style="text-align:left">Existe algoritmo?</td><td style="text-align:left" class="v">Sim</td><td style="text-align:left" class="f">Não</td></tr>
+  </table>
+
+  <p><strong>Válido:</strong> <span class="sym">(&forall;x)P(x) &rarr; (&exist;x)P(x)</span>. Todo domínio tem pelo menos um elemento, então "vale pra todos" já garante "vale pra algum".</p>
+  <p><strong>Não válido:</strong> <span class="sym">(&exist;x)P(x) &rarr; (&forall;x)P(x)</span>. Um contraexemplo já derruba, igual à aula 2:</p>
+  <pre>dominio = [1, 2, 3, 4]
+
+<span class="kw">def</span> <span class="fn">P</span>(x):
+    <span class="kw">return</span> x % 2 == 0
+
+lista = [<span class="fn">P</span>(x) <span class="kw">for</span> x <span class="kw">in</span> dominio]
+
+existe_par = <span class="fn">any</span>(lista)
+todos_pares = <span class="fn">all</span>(lista)
+
+<span class="com"># condicional falha quando a hipótese é V e a conclusão é F</span>
+<span class="fn">print</span>(existe_par <span class="kw">and</span> <span class="kw">not</span> todos_pares)</pre>
+  <p style="margin-top:-0.3rem; font-size:0.92em; color:var(--ink-2)">Dá <span class="bool">True</span>: existe_par é V e todos_pares é F, então o condicional falha aqui. Mas isso só testa um domínio; nunca prova validade, só derruba.</p>
+
+  <footer class="nav">
+    <a class="back" href="../index.html">&larr; Voltar ao mapa de aulas</a>
+  </footer>
+
+</div>
