@@ -241,9 +241,7 @@ lista_neg = [<span class="kw">not</span> <span class="fn">eh_par</span>(x) <span
 <span class="fn">print</span>(lista_neg)
 
 <span class="com"># nega (∀x)P(x)</span>
-<span class="fn">print</span>((<span class="kw">not</span> <span class="fn">all</span>(lista)) == <span class="fn">any</span>(lista_neg))
-<span class="com"># nega (∃x)P(x)</span>
-<span class="fn">print</span>((<span class="kw">not</span> <span class="fn">any</span>(lista)) == <span class="fn">all</span>(lista_neg))</pre>
+<span class="fn">print</span>((<span class="kw">not</span> <span class="fn">all</span>(lista)) == <span class="fn">any</span>(lista_neg))</pre>
 
   <h2>7. Validade</h2>
   <p>Análogo da <strong>tautologia</strong> (aula 1) para fbfs com predicado: é <strong>válida</strong> se for V em <em>todas</em> as interpretações possíveis.</p>
@@ -269,6 +267,28 @@ todos_pares = <span class="fn">all</span>(lista)
 <span class="com"># condicional falha quando a hipótese é V e a conclusão é F</span>
 <span class="fn">print</span>(existe_par <span class="kw">and</span> <span class="kw">not</span> todos_pares)</pre>
   <p style="margin-top:-0.3rem; font-size:0.92em; color:var(--ink-2)">Dá <span class="bool">True</span>: existe_par é V e todos_pares é F, então o condicional falha aqui. Mas isso só testa um domínio; nunca prova validade, só derruba.</p>
+
+  <h2>Exercícios</h2>
+  <ol class="exercises">
+    <li>
+      <strong>Negando (&exist;x)P(x):</strong> igual ao exemplo da seção 6, mas troque <code>eh_par</code> por <code>eh_impar</code> (<code>x % 2 == 1</code>). Escreva só a parte que testa a negação de <span class="sym">(&exist;x)P(x)</span>.
+      <details class="answer">
+        <summary>Ver resposta</summary>
+        <div class="reveal">
+          <pre style="margin:0">dominio = [1, 2, 3, 4, 5]
+
+<span class="kw">def</span> <span class="fn">eh_impar</span>(x):
+    <span class="kw">return</span> x % 2 == 1
+
+lista = [<span class="fn">eh_impar</span>(x) <span class="kw">for</span> x <span class="kw">in</span> dominio]
+lista_neg = [<span class="kw">not</span> <span class="fn">eh_impar</span>(x) <span class="kw">for</span> x <span class="kw">in</span> dominio]
+
+<span class="com"># nega (∃x)P(x)</span>
+<span class="fn">print</span>((<span class="kw">not</span> <span class="fn">any</span>(lista)) == <span class="fn">all</span>(lista_neg))</pre>
+        </div>
+      </details>
+    </li>
+  </ol>
 
   <footer class="nav">
     <a class="back" href="../index.html">&larr; Voltar ao mapa de aulas</a>
