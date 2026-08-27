@@ -9,6 +9,17 @@
   .dots-note { margin: 0.2rem 0 0; font-size: 0.85rem; color: var(--ink-2); }
   .step { text-align: center; font-family: var(--font-data); margin: 0.35rem 0; }
   .conclusion { text-align: center; color: var(--accent); font-weight: 600; margin: 0.6rem 0 0; }
+
+  .rec-stack { width: fit-content; max-width: 100%; margin: 1.1rem auto 0.6rem; overflow-x: auto; }
+  .rec-step { display: flex; align-items: center; flex-wrap: wrap; gap: 0.8rem 1rem; margin: 0.6rem 0; }
+  .rec-step pre { margin: 0; flex: none; }
+  .rec-step:nth-child(2) { margin-left: 8rem; }
+  .rec-step:nth-child(3) { margin-left: 16rem; }
+  .rec-note { font-family: var(--font-data); font-size: 0.82rem; color: var(--ink-2); line-height: 1.5; }
+  .rec-note .rec-val { display: block; font-weight: 700; color: var(--accent); font-size: 0.95rem; margin-top: 0.15rem; }
+  .rec-note.base .rec-val { color: var(--ok); }
+  .rec-back { text-align: center; font-family: var(--font-data); font-size: 0.9rem; margin: 0.4rem 0 0; }
+  .rec-back b { color: var(--ok); }
 </style>
 
 <div class="page">
@@ -48,6 +59,40 @@
 
   <h3>Exemplo: a árvore genealógica</h3>
   <p>Uma pessoa teve 2 filhos (geração 1); cada filho teve 2 filhos (geração 2); e assim por diante. Conjectura: a geração n tem P(n) = 2<sup>n</sup> descendentes.</p>
+  <div class="card" style="text-align:center">
+    <svg viewBox="0 0 520 175" style="width:100%; max-width:460px; height:auto; display:block; margin:0 auto">
+      <g style="stroke:var(--border); stroke-width:2">
+        <line x1="290" y1="24" x2="200" y2="66"/>
+        <line x1="290" y1="24" x2="380" y2="66"/>
+        <line x1="200" y1="74" x2="140" y2="116"/>
+        <line x1="200" y1="74" x2="260" y2="116"/>
+        <line x1="380" y1="74" x2="320" y2="116"/>
+        <line x1="380" y1="74" x2="440" y2="116"/>
+      </g>
+      <g style="fill:var(--accent)">
+        <circle cx="290" cy="20" r="7"/>
+        <circle cx="200" cy="70" r="7"/>
+        <circle cx="380" cy="70" r="7"/>
+        <circle cx="140" cy="120" r="7"/>
+        <circle cx="260" cy="120" r="7"/>
+        <circle cx="320" cy="120" r="7"/>
+        <circle cx="440" cy="120" r="7"/>
+      </g>
+      <g style="fill:var(--ink-mute); font-size:14px">
+        <text x="140" y="148" text-anchor="middle">&#8942;</text>
+        <text x="260" y="148" text-anchor="middle">&#8942;</text>
+        <text x="320" y="148" text-anchor="middle">&#8942;</text>
+        <text x="440" y="148" text-anchor="middle">&#8942;</text>
+      </g>
+      <g style="fill:var(--ink-2); font-size:12px">
+        <text x="4" y="24">Ancestral</text>
+        <text x="4" y="74">Geração 1: 2</text>
+        <text x="4" y="124">Geração 2: 4</text>
+        <text x="4" y="163">Geração n: 2ⁿ</text>
+      </g>
+    </svg>
+    <p style="margin:0.6rem 0 0; font-size:0.85rem; color:var(--ink-2)">Cada bolinha se ramifica em duas na geração seguinte: por isso o total dobra a cada geração.</p>
+  </div>
   <table class="truth">
     <tr><th>Geração</th><th>Descendentes</th></tr>
     <tr><td>1</td><td>2 = 2¹</td></tr>
@@ -72,6 +117,30 @@
 
 <span class="kw">for</span> n <span class="kw">in</span> <span class="fn">range</span>(1, 6):
     <span class="fn">print</span>(n, <span class="fn">descendentes</span>(n), <span class="fn">descendentes</span>(n) == 2 ** n)</pre>
+
+  <h3>Como a recursão calcula descendentes(3)</h3>
+  <p>Chamando com n = 3: cada chamada abre outra com n &minus; 1 e fica esperando. O caso base devolve 2, e os valores voltam de baixo para cima dobrando em cada nível.</p>
+  <div class="rec-stack">
+    <div class="rec-step">
+<pre><span class="fn">descendentes</span>(<span class="bool">3</span>)
+    <span class="kw">return</span> 2 * <span class="fn">descendentes</span>(2)</pre>
+      <div class="rec-note">n = 3, n &ne; 1<br>chama descendentes(2)<span class="rec-val">2 * 4 = 8</span></div>
+    </div>
+    <div class="rec-step">
+<pre><span class="fn">descendentes</span>(<span class="bool">2</span>)
+    <span class="kw">return</span> 2 * <span class="fn">descendentes</span>(1)</pre>
+      <div class="rec-note">n = 2, n &ne; 1<br>chama descendentes(1)<span class="rec-val">2 * 2 = 4</span></div>
+    </div>
+    <div class="rec-step">
+<pre><span class="fn">descendentes</span>(<span class="bool">1</span>)
+    <span class="kw">if</span> n == 1: <span class="kw">return</span> 2</pre>
+      <div class="rec-note base">n = 1: caso base<br>não chama mais nada<span class="rec-val">primeiro return = 2</span></div>
+    </div>
+  </div>
+  <p class="rec-back" style="text-align:center">volta: <b>2</b> &rarr; 2 * 2 = <b>4</b> &rarr; 2 * 4 = <b>8</b></p>
+  <div class="card tip">
+    O <strong>caso base</strong> (n = 1) é a base da indução. A chamada <strong>descendentes(n &minus; 1)</strong> é a hipótese de indução: confia-se que ela já devolve o valor certo, e só se prova o passo de n &minus; 1 para n.
+  </div>
 
   <h3>Exemplo: soma dos ímpares</h3>
   <p><span class="sym">1 + 3 + 5 + ... + (2n &minus; 1) = n²</span></p>
@@ -129,70 +198,6 @@
     Só a base sem o passo indutivo: nada garante ir além do primeiro caso.<br>
     Só o passo indutivo sem a base: o "efeito dominó" nunca começa a cair.
   </div>
-
-  <h2>Exercícios</h2>
-  <ol class="exercises">
-    <li>
-      Para a equação P(n): 2 + 4 + 6 + ... + 2n = n(n + 1), escreva a hipótese de indução P(k) e a equação P(k+1).
-      <details class="answer">
-        <summary>Ver resposta</summary>
-        <div class="reveal">
-          <p class="step">P(k): 2 + 4 + ... + 2k = k(k + 1)</p>
-          <p class="step">P(k+1): 2 + 4 + ... + 2k + 2(k+1) = (k+1)(k+2)</p>
-        </div>
-      </details>
-    </li>
-    <li>
-      Prove por indução (primeiro princípio) que 1 + 5 + 9 + ... + (4n &minus; 3) = n(2n &minus; 1) para todo n &ge; 1.
-      <details class="answer">
-        <summary>Ver resposta</summary>
-        <div class="reveal">
-          <p class="step">Base: P(1): 1 = 1(2 &middot; 1 &minus; 1) = 1. Verdade.</p>
-          <p class="step">Hipótese: P(k): 1 + 5 + ... + (4k &minus; 3) = k(2k &minus; 1)</p>
-          <p class="step">1 + 5 + ... + (4k &minus; 3) + [4(k+1) &minus; 3]</p>
-          <p class="step">= k(2k &minus; 1) + (4k + 1)</p>
-          <p class="step">= 2k² &minus; k + 4k + 1 = 2k² + 3k + 1</p>
-          <p class="step">= (k + 1)(2k + 1) = (k + 1)[2(k+1) &minus; 1]</p>
-          <p class="conclusion">Logo, P(k+1) vale, e a fórmula é válida para todo n.</p>
-        </div>
-      </details>
-    </li>
-    <li>
-      Escreva um código Python, igual ao estilo da seção 2, que use um <code>for</code> para testar a conjectura "1 + 2 + ... + n = n(n+1)/2" para n de 1 a 10.
-      <details class="answer">
-        <summary>Ver resposta</summary>
-        <div class="reveal">
-          <pre style="margin:0"><span class="kw">def</span> <span class="fn">soma</span>(n):
-    total = 0
-    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(1, n + 1):
-        total += i
-    <span class="kw">return</span> total
-
-<span class="kw">for</span> n <span class="kw">in</span> <span class="fn">range</span>(1, 11):
-    <span class="fn">print</span>(n, <span class="fn">soma</span>(n), <span class="fn">soma</span>(n) == n * (n + 1) // 2)</pre>
-        </div>
-      </details>
-    </li>
-    <li>
-      Por que a demonstração de "todo inteiro &ge; 2 é primo ou produto de primos" (seção 3) precisa do <strong>segundo</strong> princípio, e não do primeiro?
-      <details class="answer">
-        <summary>Ver resposta</summary>
-        <div class="reveal">
-          <p style="margin:0">Porque, ao escrever k+1 = a &middot; b, os fatores a e b podem ser bem menores que k, não necessariamente k. A hipótese de indução precisa valer para <strong>todo</strong> r entre 2 e k, não só para P(k) sozinho, que é exatamente o que o segundo princípio oferece.</p>
-        </div>
-      </details>
-    </li>
-    <li>
-      O que está errado na seguinte "demonstração" por indução de que, para qualquer inteiro positivo n, n é igual a n + 1?<br>
-      <em>Suponha que P(k): k = k + 1 é verdadeira. Somando 1 aos dois lados: k + 1 = k + 2. Logo, P(k+1) é verdadeira.</em>
-      <details class="answer">
-        <summary>Ver resposta</summary>
-        <div class="reveal">
-          <p style="margin:0">Falta a <strong>base da indução</strong>. O passo indutivo até está correto (se P(k) fosse verdade, P(k+1) seria também), mas ninguém provou P(1): 1 = 2 é falso, e nenhum outro caso serve de base. Sem uma base verdadeira, o efeito dominó nunca começa, e a conclusão nunca vale para nenhum n.</p>
-        </div>
-      </details>
-    </li>
-  </ol>
 
   <footer class="nav">
     <a class="back" href="../index.html">&larr; Voltar ao mapa de aulas</a>
