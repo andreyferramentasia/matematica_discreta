@@ -199,6 +199,31 @@
     Só o passo indutivo sem a base: o "efeito dominó" nunca começa a cair.
   </div>
 
+  <h2>Exercícios</h2>
+  <ol class="exercises">
+    <li>
+      O fatorial é definido de forma recursiva: n! = n &middot; (n &minus; 1)!, com 1! = 1. Prove, pelo primeiro princípio de indução, que <span class="sym">n! &ge; 2<sup>n&minus;1</sup></span> para todo n &ge; 1. Depois, escreva a função recursiva <code>fatorial(n)</code> em Python e teste se ela satisfaz essa desigualdade para n de 1 a 7.
+      <details class="answer">
+        <summary>Ver resposta</summary>
+        <div class="reveal">
+          <p class="step">Base: P(1): 1! = 1 &ge; 2⁰ = 1. Verdade.</p>
+          <p class="step">Hipótese: P(k): k! &ge; 2<sup>k&minus;1</sup></p>
+          <p class="step">(k+1)! = (k+1) &middot; k!</p>
+          <p class="step">(k+1)! &ge; (k+1) &middot; 2<sup>k&minus;1</sup></p>
+          <p class="step">Como k &ge; 1, temos k+1 &ge; 2, logo (k+1) &middot; 2<sup>k&minus;1</sup> &ge; 2 &middot; 2<sup>k&minus;1</sup> = 2<sup>k</sup></p>
+          <p class="conclusion">Logo, (k+1)! &ge; 2<sup>k</sup>, e P(k+1) vale para todo n.</p>
+          <pre style="margin:0.8rem 0 0"><span class="kw">def</span> <span class="fn">fatorial</span>(n):
+    <span class="kw">if</span> n == 1:
+        <span class="kw">return</span> 1
+    <span class="kw">return</span> n * <span class="fn">fatorial</span>(n - 1)
+
+<span class="kw">for</span> n <span class="kw">in</span> <span class="fn">range</span>(1, 8):
+    <span class="fn">print</span>(n, <span class="fn">fatorial</span>(n), <span class="fn">fatorial</span>(n) &gt;= 2 ** (n - 1))</pre>
+        </div>
+      </details>
+    </li>
+  </ol>
+
   <footer class="nav">
     <a class="back" href="../index.html">&larr; Voltar ao mapa de aulas</a>
   </footer>
