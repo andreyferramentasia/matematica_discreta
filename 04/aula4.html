@@ -1,0 +1,201 @@
+<meta charset="UTF-8">
+<title>Aula 4: Indução Matemática | Matemática Discreta</title>
+<link rel="stylesheet" href="../assets/estilo.css">
+<style>
+  .dots { display: flex; gap: 0.45rem; margin: 0.7rem 0 0.3rem; align-items: center; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; background: var(--border); flex: none; }
+  .dot.on { background: var(--ok); }
+  .dots-label { font-size: 0.78rem; color: var(--ink-2); margin: 0.8rem 0 0; }
+  .dots-note { margin: 0.2rem 0 0; font-size: 0.85rem; color: var(--ink-2); }
+  .step { text-align: center; font-family: var(--font-data); margin: 0.35rem 0; }
+  .conclusion { text-align: center; color: var(--accent); font-weight: 600; margin: 0.6rem 0 0; }
+</style>
+
+<div class="page">
+
+  <a class="back" href="../index.html">&larr; Voltar ao mapa de aulas</a>
+
+  <header class="masthead">
+    <p class="eyebrow">Matemática Discreta · Aula 04</p>
+    <h1>Indução Matemática</h1>
+    <p class="sub">Primeiro e segundo princípios de indução, com exemplos aplicados a recursividade e corretude de algoritmos. (Gersting, cap. 2.2)</p>
+  </header>
+
+  <h2>1. A ideia: subir uma escada infinita</h2>
+  <p>Imagine uma escada infinitamente alta. Como saber que você consegue chegar a um degrau arbitrariamente alto, sem testar todos, um por um?</p>
+  <div class="card">
+    <p style="margin:0 0 0.6rem"><strong>Duas hipóteses bastam:</strong></p>
+    <ol style="margin:0; padding-left:1.2rem">
+      <li>Você consegue alcançar o <strong>primeiro</strong> degrau.</li>
+      <li>De <strong>qualquer</strong> degrau que você já alcançou, você sempre consegue ir ao próximo.</li>
+    </ol>
+    <p class="dots-label">Degrau 1 alcançado, e cada degrau sempre leva ao seguinte:</p>
+    <div class="dots"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></div>
+    <p class="dots-note">O efeito dominó: as duas hipóteses juntas garantem qualquer degrau, não importa quão alto.</p>
+  </div>
+  <p>Trocando "degrau" por "propriedade P de um número n", essa é a <strong>indução matemática</strong>: uma técnica de demonstração para provar que algo vale para todo inteiro n a partir de um valor inicial.</p>
+
+  <h2>2. Primeiro princípio de indução</h2>
+  <div class="card tip">
+    <p style="margin:0 0 0.5rem"><strong>Para provar (&forall;n)P(n), basta provar duas coisas:</strong></p>
+    <table class="truth" style="margin:0.4rem 0 0">
+      <tr><th style="text-align:left">Passo</th><th style="text-align:left">O que fazer</th></tr>
+      <tr><td style="text-align:left; font-family:var(--font-data)">1. Base da indução</td><td style="text-align:left">Provar P(1) (a propriedade vale no primeiro caso).</td></tr>
+      <tr><td style="text-align:left; font-family:var(--font-data)">2. Passo indutivo</td><td style="text-align:left">Supor P(k) verdadeira (<strong>hipótese de indução</strong>) e provar P(k+1).</td></tr>
+    </table>
+  </div>
+  <p style="margin-top:-0.3rem; font-size:0.9rem; color:var(--ink-2)">A base não precisa começar em 1: pode começar em 0, 4, ou qualquer inteiro, dependendo do que a propriedade exige.</p>
+
+  <h3>Exemplo: a árvore genealógica</h3>
+  <p>Uma pessoa teve 2 filhos (geração 1); cada filho teve 2 filhos (geração 2); e assim por diante. Conjectura: a geração n tem P(n) = 2<sup>n</sup> descendentes.</p>
+  <table class="truth">
+    <tr><th>Geração</th><th>Descendentes</th></tr>
+    <tr><td>1</td><td>2 = 2¹</td></tr>
+    <tr><td>2</td><td>4 = 2²</td></tr>
+    <tr><td>3</td><td>8 = 2³</td></tr>
+  </table>
+  <details class="demo">
+    <summary>Ver demonstração</summary>
+    <div class="reveal">
+      <p class="step">Base: P(1): 2¹ = 2 descendentes. Verdade, pois a pessoa teve 2 filhos.</p>
+      <p class="step">Hipótese de indução: P(k): a geração k tem 2<sup>k</sup> descendentes.</p>
+      <p class="step">Cada descendente da geração k tem 2 filhos, então P(k+1) = 2 · P(k)</p>
+      <p class="step">P(k+1) = 2 · 2<sup>k</sup> = 2<sup>k+1</sup></p>
+      <p class="conclusion">Logo, P(k+1) vale, e a fórmula P(n) = 2ⁿ é válida para todo n.</p>
+    </div>
+  </details>
+  <p>A recursão em código espelha exatamente a indução: o caso base do código é a base da indução, e a chamada recursiva usando um valor menor é a hipótese de indução aplicada.</p>
+  <pre><span class="kw">def</span> <span class="fn">descendentes</span>(n):
+    <span class="kw">if</span> n == 1:
+        <span class="kw">return</span> 2
+    <span class="kw">return</span> 2 * <span class="fn">descendentes</span>(n - 1)
+
+<span class="kw">for</span> n <span class="kw">in</span> <span class="fn">range</span>(1, 6):
+    <span class="fn">print</span>(n, <span class="fn">descendentes</span>(n), <span class="fn">descendentes</span>(n) == 2 ** n)</pre>
+
+  <h3>Exemplo: soma dos ímpares</h3>
+  <p><span class="sym">1 + 3 + 5 + ... + (2n &minus; 1) = n²</span></p>
+  <details class="demo">
+    <summary>Ver demonstração</summary>
+    <div class="reveal">
+      <p class="step">Base: P(1): 1 = 1². Verdade.</p>
+      <p class="step">Hipótese: P(k): 1 + 3 + ... + (2k &minus; 1) = k²</p>
+      <p class="step">1 + 3 + ... + (2k &minus; 1) + [2(k+1) &minus; 1]</p>
+      <p class="step">= k² + [2(k+1) &minus; 1]</p>
+      <p class="step">= k² + 2k + 1</p>
+      <p class="step">= (k + 1)²</p>
+      <p class="conclusion">Logo, P(k+1) vale para todo n.</p>
+    </div>
+  </details>
+  <pre><span class="kw">def</span> <span class="fn">soma_impares</span>(n):
+    total = 0
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(1, n + 1):
+        total += 2 * i - 1
+    <span class="kw">return</span> total
+
+<span class="kw">for</span> n <span class="kw">in</span> <span class="fn">range</span>(1, 6):
+    <span class="fn">print</span>(n, <span class="fn">soma_impares</span>(n), <span class="fn">soma_impares</span>(n) == n ** 2)</pre>
+
+  <h2>3. Segundo princípio de indução</h2>
+  <p>Às vezes provar P(k+1) só a partir de P(k) não basta: é preciso usar valores <strong>bem mais atrás</strong>, não só o imediatamente anterior.</p>
+  <table class="truth">
+    <tr><th style="text-align:left">Aspecto</th><th style="text-align:left">Primeiro princípio</th><th style="text-align:left">Segundo princípio</th></tr>
+    <tr><td style="text-align:left">Hipótese de indução</td><td style="text-align:left">supõe só P(k)</td><td style="text-align:left">supõe P(r) para todo r, 1 &le; r &le; k</td></tr>
+    <tr><td style="text-align:left">Use quando</td><td style="text-align:left">P(k) sozinho basta para provar P(k+1)</td><td style="text-align:left">P(k+1) depende de mais de uma posição atrás</td></tr>
+    <tr><td style="text-align:left">Força da conclusão</td><td style="text-align:left" class="v">equivalente</td><td style="text-align:left" class="v">equivalente</td></tr>
+  </table>
+  <p style="margin-top:-0.3rem; font-size:0.9rem; color:var(--ink-2)">Os dois princípios provam exatamente as mesmas conclusões possíveis; a escolha é só uma questão de qual hipótese é mais fácil de usar em cada problema.</p>
+
+  <h3>Exemplo: todo inteiro &ge; 2 é primo ou produto de primos</h3>
+  <p>Base da corretude de algoritmos de fatoração, usados em criptografia (veremos na aula 14).</p>
+  <details class="demo">
+    <summary>Ver demonstração</summary>
+    <div class="reveal">
+      <p class="step">Base: P(2): 2 é primo.</p>
+      <p class="step">Hipótese: para todo r, 2 &le; r &le; k, P(r) vale (r é primo ou produto de primos).</p>
+      <p class="step">Caso k+1 é primo: P(k+1) vale direto.</p>
+      <p class="step">Caso k+1 não é primo: k+1 = a &middot; b, com 2 &le; a &le; k e 2 &le; b &le; k</p>
+      <p class="step">Pela hipótese, a e b são primos ou produtos de primos</p>
+      <p class="conclusion">Logo, k+1 = a &middot; b também é produto de primos.</p>
+    </div>
+  </details>
+  <div class="card tip">
+    <strong>Repare por quê é o segundo princípio:</strong> a demonstração usa a e b, dois números que podem estar bem mais atrás que k, não só k. Só supor P(k) não bastaria.
+  </div>
+
+  <h2>4. Erros comuns</h2>
+  <div class="card tip">
+    <strong>Uma demonstração por indução precisa dos DOIS passos.</strong><br>
+    Só a base sem o passo indutivo: nada garante ir além do primeiro caso.<br>
+    Só o passo indutivo sem a base: o "efeito dominó" nunca começa a cair.
+  </div>
+
+  <h2>Exercícios</h2>
+  <ol class="exercises">
+    <li>
+      Para a equação P(n): 2 + 4 + 6 + ... + 2n = n(n + 1), escreva a hipótese de indução P(k) e a equação P(k+1).
+      <details class="answer">
+        <summary>Ver resposta</summary>
+        <div class="reveal">
+          <p class="step">P(k): 2 + 4 + ... + 2k = k(k + 1)</p>
+          <p class="step">P(k+1): 2 + 4 + ... + 2k + 2(k+1) = (k+1)(k+2)</p>
+        </div>
+      </details>
+    </li>
+    <li>
+      Prove por indução (primeiro princípio) que 1 + 5 + 9 + ... + (4n &minus; 3) = n(2n &minus; 1) para todo n &ge; 1.
+      <details class="answer">
+        <summary>Ver resposta</summary>
+        <div class="reveal">
+          <p class="step">Base: P(1): 1 = 1(2 &middot; 1 &minus; 1) = 1. Verdade.</p>
+          <p class="step">Hipótese: P(k): 1 + 5 + ... + (4k &minus; 3) = k(2k &minus; 1)</p>
+          <p class="step">1 + 5 + ... + (4k &minus; 3) + [4(k+1) &minus; 3]</p>
+          <p class="step">= k(2k &minus; 1) + (4k + 1)</p>
+          <p class="step">= 2k² &minus; k + 4k + 1 = 2k² + 3k + 1</p>
+          <p class="step">= (k + 1)(2k + 1) = (k + 1)[2(k+1) &minus; 1]</p>
+          <p class="conclusion">Logo, P(k+1) vale, e a fórmula é válida para todo n.</p>
+        </div>
+      </details>
+    </li>
+    <li>
+      Escreva um código Python, igual ao estilo da seção 2, que use um <code>for</code> para testar a conjectura "1 + 2 + ... + n = n(n+1)/2" para n de 1 a 10.
+      <details class="answer">
+        <summary>Ver resposta</summary>
+        <div class="reveal">
+          <pre style="margin:0"><span class="kw">def</span> <span class="fn">soma</span>(n):
+    total = 0
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(1, n + 1):
+        total += i
+    <span class="kw">return</span> total
+
+<span class="kw">for</span> n <span class="kw">in</span> <span class="fn">range</span>(1, 11):
+    <span class="fn">print</span>(n, <span class="fn">soma</span>(n), <span class="fn">soma</span>(n) == n * (n + 1) // 2)</pre>
+        </div>
+      </details>
+    </li>
+    <li>
+      Por que a demonstração de "todo inteiro &ge; 2 é primo ou produto de primos" (seção 3) precisa do <strong>segundo</strong> princípio, e não do primeiro?
+      <details class="answer">
+        <summary>Ver resposta</summary>
+        <div class="reveal">
+          <p style="margin:0">Porque, ao escrever k+1 = a &middot; b, os fatores a e b podem ser bem menores que k, não necessariamente k. A hipótese de indução precisa valer para <strong>todo</strong> r entre 2 e k, não só para P(k) sozinho, que é exatamente o que o segundo princípio oferece.</p>
+        </div>
+      </details>
+    </li>
+    <li>
+      O que está errado na seguinte "demonstração" por indução de que, para qualquer inteiro positivo n, n é igual a n + 1?<br>
+      <em>Suponha que P(k): k = k + 1 é verdadeira. Somando 1 aos dois lados: k + 1 = k + 2. Logo, P(k+1) é verdadeira.</em>
+      <details class="answer">
+        <summary>Ver resposta</summary>
+        <div class="reveal">
+          <p style="margin:0">Falta a <strong>base da indução</strong>. O passo indutivo até está correto (se P(k) fosse verdade, P(k+1) seria também), mas ninguém provou P(1): 1 = 2 é falso, e nenhum outro caso serve de base. Sem uma base verdadeira, o efeito dominó nunca começa, e a conclusão nunca vale para nenhum n.</p>
+        </div>
+      </details>
+    </li>
+  </ol>
+
+  <footer class="nav">
+    <a class="back" href="../index.html">&larr; Voltar ao mapa de aulas</a>
+  </footer>
+
+</div>
