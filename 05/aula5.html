@@ -1,0 +1,292 @@
+<meta charset="UTF-8">
+<title>Aula 5: Conjuntos | Matemática Discreta</title>
+<link rel="stylesheet" href="../assets/estilo.css">
+<style>
+  table.truth td[style*="text-align:left"], table.truth th[style*="text-align:left"] { text-align: left; }
+  .step { text-align: center; font-family: var(--font-data); margin: 0.35rem 0; }
+  .conclusion { text-align: center; color: var(--accent); font-weight: 600; margin: 0.6rem 0 0; }
+
+  .venn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.9rem; margin: 1rem 0; }
+  .venn-grid figure { margin: 0; text-align: center; }
+  .venn-grid figcaption { font-family: var(--font-data); font-size: 0.9rem; margin-top: 0.3rem; }
+  .venn-grid figcaption small { display: block; font-family: var(--font-body); color: var(--ink-2); font-size: 0.8rem; }
+  .venn { width: 100%; max-width: 220px; height: auto; display: block; margin: 0 auto; }
+  .venn .box { fill: var(--surface); stroke: var(--ink-2); stroke-width: 1.2; }
+  .venn .sh { fill: var(--content); fill-opacity: 0.4; }
+  .venn .hole { fill: var(--surface); }
+  .venn .ol { fill: none; stroke: var(--ink-2); stroke-width: 1.5; }
+  .venn text { fill: var(--ink); font-family: var(--font-data); font-size: 13px; }
+
+</style>
+
+<div class="page">
+
+  <a class="back" href="../index.html">&larr; Voltar ao mapa de aulas</a>
+
+  <header class="masthead">
+    <p class="eyebrow">Matemática Discreta · Aula 05</p>
+    <h1>Conjuntos</h1>
+    <p class="sub">Notação, subconjuntos, operações, produto cartesiano e conjuntos enumeráveis. (Gersting, cap. 4.1)</p>
+  </header>
+
+  <h2>1. O que é um conjunto</h2>
+  <div class="card">
+    <p style="margin:0"><strong>Já usamos essa palavra no dia a dia:</strong> um "conjunto de panelas" é uma coleção de objetos que andam juntos.</p>
+  </div>
+  <p>Na matemática é a mesma ideia, com duas regras a mais:</p>
+  <table class="truth">
+    <tr><th style="text-align:left">Regra</th><th style="text-align:left">Exemplo</th></tr>
+    <tr><td style="text-align:left">A ordem não importa</td><td style="text-align:left; font-family:var(--font-data)">{violeta, verde} = {verde, violeta}</td></tr>
+    <tr><td style="text-align:left">Repetir não muda nada</td><td style="text-align:left; font-family:var(--font-data)">{1, 1, 2} = {1, 2}</td></tr>
+  </table>
+  <table class="truth">
+    <tr><th>Símbolo</th><th style="text-align:left">Leitura</th><th style="text-align:left">Exemplo com A = {violeta, verde, castanho}</th></tr>
+    <tr><td style="font-family:var(--font-data)">&isin;</td><td style="text-align:left">pertence</td><td style="text-align:left">verde &isin; A</td></tr>
+    <tr><td style="font-family:var(--font-data)">&notin;</td><td style="text-align:left">não pertence</td><td style="text-align:left">magenta &notin; A</td></tr>
+  </table>
+
+  <h3>Três jeitos de descrever um conjunto</h3>
+  <p>Todos abaixo descrevem S, o conjunto dos inteiros positivos pares:</p>
+  <table class="truth">
+    <tr><th style="text-align:left">Jeito</th><th style="text-align:left">Como fica</th></tr>
+    <tr><td style="text-align:left">1. Listar</td><td style="text-align:left; font-family:var(--font-data)">S = {2, 4, 6, ...}</td></tr>
+    <tr><td style="text-align:left">2. Recorrência</td><td style="text-align:left; font-family:var(--font-data)">2 &isin; S; se n &isin; S, então n + 2 &isin; S</td></tr>
+    <tr><td style="text-align:left">3. Propriedade</td><td style="text-align:left; font-family:var(--font-data)">S = {x | x é inteiro positivo par}</td></tr>
+  </table>
+  <p style="margin-top:-0.3rem; font-size:0.9rem; color:var(--ink-2)">Lê-se "o conjunto dos x <strong>tais que</strong> x é inteiro positivo par". O jeito 3 costuma ser o melhor: a propriedade é um predicado, como na aula 3.</p>
+
+  <h3>Conjuntos com nome próprio</h3>
+  <table class="truth">
+    <tr><th>Símbolo</th><th style="text-align:left">Conjunto</th></tr>
+    <tr><td>&#8469;</td><td style="text-align:left">inteiros não negativos: 0, 1, 2, ... (o 0 está incluído)</td></tr>
+    <tr><td>&#8484;</td><td style="text-align:left">todos os inteiros</td></tr>
+    <tr><td>&#8474;</td><td style="text-align:left">racionais (frações)</td></tr>
+    <tr><td>&#8477;</td><td style="text-align:left">reais</td></tr>
+    <tr><td>&#8450;</td><td style="text-align:left">complexos</td></tr>
+    <tr><td>&empty; ou { }</td><td style="text-align:left">conjunto vazio: nenhum elemento</td></tr>
+  </table>
+  <div class="card tip">
+    <p style="margin:0 0 0.5rem"><strong>Cuidado: &empty; e {&empty;} são diferentes.</strong></p>
+    <ul style="margin:0">
+      <li><strong>&empty;</strong> é uma caixa vazia: 0 elementos.</li>
+      <li><strong>{&empty;}</strong> é uma caixa que tem uma caixa vazia dentro: 1 elemento.</li>
+    </ul>
+  </div>
+
+  <h2>2. Subconjunto</h2>
+  <p>A é <strong>subconjunto</strong> de B quando todo elemento de A também está em B.</p>
+  <p class="step">A &sube; B &nbsp;significa&nbsp; (&forall;x)(x &isin; A &rarr; x &isin; B)</p>
+  <div class="connective-row">
+    <div class="card connective">
+      <div class="connective-text">
+        <h3><span class="sym">A &sube; B</span> · Subconjunto</h3>
+        <p class="idea">Ideia: A cabe inteiro dentro de B.</p>
+        <p>Suas músicas favoritas formam um subconjunto de todas as músicas do seu celular.</p>
+        <p><strong>A &sub; B</strong> (subconjunto <strong>próprio</strong>): A &sube; B e sobra pelo menos um elemento de B fora de A.</p>
+      </div>
+    </div>
+    <svg class="venn" viewBox="0 0 200 130" role="img" aria-label="A dentro de B">
+      <rect class="box" x="5" y="5" width="190" height="120" rx="6"/>
+      <circle class="ol" cx="100" cy="68" r="52"/>
+      <circle class="sh" cx="88" cy="74" r="26"/>
+      <circle class="ol" cx="88" cy="74" r="26"/>
+      <text x="84" y="79">A</text>
+      <text x="130" y="42">B</text>
+    </svg>
+  </div>
+
+  <p style="margin:1.2rem 0 0.4rem">Com A = {1, 7, 9, 15}, B = {7, 9} e C = {7, 9, 15, 20}:</p>
+  <table class="truth">
+    <tr><th style="text-align:left">Proposição</th><th>Valor</th><th style="text-align:left">Por quê</th></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">B &sube; C</td><td class="v">V</td><td style="text-align:left">7 e 9 estão em C</td></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">B &sub; A</td><td class="v">V</td><td style="text-align:left">cabe, e sobram 1 e 15 em A</td></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">A &sube; C</td><td class="f">F</td><td style="text-align:left">1 &notin; C</td></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">15 &isin; C</td><td class="v">V</td><td style="text-align:left">15 é elemento de C</td></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">{7} &sub; A</td><td class="v">V</td><td style="text-align:left">{7} é conjunto, então usa &sub;, não &isin;</td></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">&empty; &sube; C</td><td class="v">V</td><td style="text-align:left">&empty; é subconjunto de qualquer conjunto</td></tr>
+  </table>
+
+  <p>Em Python, os operadores de comparação testam subconjunto:</p>
+  <pre>A = {1, 7, 9, 15}
+B = {2, 3}
+C = {7, 9, 15, 20}
+
+<span class="fn">print</span>(B &lt;= C)
+<span class="fn">print</span>(B &lt;  C)
+<span class="fn">print</span>(B &gt;= C)
+<span class="fn">print</span>(B &gt;  C)</pre>
+  <table class="truth">
+    <tr><th style="text-align:left">Python</th><th>Matemática</th><th style="text-align:left">Significado</th><th>Resultado</th></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">B &lt;= C</td><td>B &sube; C</td><td style="text-align:left">B está dentro de C (pode ser igual)</td><td class="f">False</td></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">B &lt; C</td><td>B &sub; C</td><td style="text-align:left">B está dentro de C (tem que ser menor)</td><td class="f">False</td></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">B &gt;= C</td><td>B &supe; C</td><td style="text-align:left">B contém C (pode ser igual)</td><td class="f">False</td></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">B &gt; C</td><td>B &sup; C</td><td style="text-align:left">B contém C (tem que ser maior)</td><td class="f">False</td></tr>
+  </table>
+  <p style="margin-top:-0.3rem; font-size:0.9rem; color:var(--ink-2)">Tudo dá <span class="f">False</span>: 2 e 3 não estão em C, e C tem elementos que B não tem.</p>
+
+  <div class="card tip">
+    <p style="margin:0 0 0.5rem"><strong>&isin; ou &sube;?</strong></p>
+    <ul style="margin:0">
+      <li><strong>&isin;</strong> liga um <strong>elemento</strong> a um conjunto: 7 &isin; B.</li>
+      <li><strong>&sube;</strong> liga um <strong>conjunto</strong> a outro conjunto: {7} &sube; B.</li>
+    </ul>
+  </div>
+
+  <h3>Igualdade de conjuntos</h3>
+  <p>Dois conjuntos são iguais quando têm os mesmos elementos. Para provar, mostre a inclusão nos dois sentidos:</p>
+  <p class="step">A = B &nbsp;se e somente se&nbsp; A &sube; B e B &sube; A</p>
+
+  <h2>3. Operações binárias e unárias</h2>
+  <h3>Par ordenado</h3>
+  <p>Diferente do conjunto, no <strong>par ordenado</strong> a ordem importa: é como a coordenada de um assento (fileira, cadeira).</p>
+  <table class="truth">
+    <tr><th style="text-align:left">Conjunto</th><th style="text-align:left">Par ordenado</th></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">{1, 2} = {2, 1}</td><td style="text-align:left; font-family:var(--font-data)">(1, 2) &ne; (2, 1)</td></tr>
+  </table>
+
+  <h3>Quando uma operação é binária em S</h3>
+  <p>Pense numa máquina de café com dois botões: para qualquer par de botões apertados, ela precisa entregar uma bebida do próprio cardápio.</p>
+  <table class="truth">
+    <tr><th style="text-align:left">Exigência para x &#8728; y</th><th style="text-align:left">Nome</th><th style="text-align:left">Na máquina</th></tr>
+    <tr><td style="text-align:left">existe e é único</td><td style="text-align:left">bem definida</td><td style="text-align:left">sempre sai uma bebida, e só uma</td></tr>
+    <tr><td style="text-align:left">pertence a S</td><td style="text-align:left">S é fechado</td><td style="text-align:left">a bebida está no cardápio</td></tr>
+  </table>
+  <div class="card">
+    <p style="margin:0 0 0.5rem"><strong>Considere:</strong></p>
+    <p class="step">S = &#8469; = {0, 1, 2, 3, ...}</p>
+    <table class="truth" style="margin:0.6rem auto 0">
+      <tr><th style="text-align:left">Operação</th><th style="text-align:left">Teste com x = 3, y = 5</th><th style="text-align:left">Resultado em &#8469;?</th><th>Binária em &#8469;?</th></tr>
+      <tr><td style="text-align:left; font-family:var(--font-data)">x &#8728; y = x + y</td><td style="text-align:left; font-family:var(--font-data)">3 + 5 = 8</td><td style="text-align:left">sempre sai um único natural</td><td class="v">Sim</td></tr>
+      <tr><td style="text-align:left; font-family:var(--font-data)">x &#8728; y = x &middot; y</td><td style="text-align:left; font-family:var(--font-data)">3 &middot; 5 = 15</td><td style="text-align:left">sempre sai um único natural</td><td class="v">Sim</td></tr>
+      <tr><td style="text-align:left; font-family:var(--font-data)">x &#8728; y = x &minus; y</td><td style="text-align:left; font-family:var(--font-data)">3 &minus; 5 = &minus;2</td><td style="text-align:left">&minus;2 &notin; &#8469;: saiu do cardápio</td><td class="f">Não</td></tr>
+      <tr><td style="text-align:left; font-family:var(--font-data)">x &#8728; y = x &divide; y</td><td style="text-align:left; font-family:var(--font-data)">3 &divide; 5 = 0,6</td><td style="text-align:left">0,6 &notin; &#8469;, e x &divide; 0 nem existe</td><td class="f">Não</td></tr>
+    </table>
+    <p style="margin:0.6rem 0 0; font-size:0.9rem; color:var(--ink-2)">Basta um par (x, y) que falhe para a operação não ser binária em S.</p>
+  </div>
+  <p>Uma operação <strong>unária</strong> segue as mesmas regras, mas age em um elemento só (ex.: negação).</p>
+  <table class="truth">
+    <tr><th style="text-align:left">Operação</th><th>Conjunto</th><th>É operação?</th><th style="text-align:left">Motivo</th></tr>
+    <tr><td style="text-align:left">x + y</td><td>&#8484;</td><td class="v">Sim</td><td style="text-align:left">soma de inteiros é um inteiro único</td></tr>
+    <tr><td style="text-align:left">x &divide; y</td><td>&#8484;</td><td class="f">Não</td><td style="text-align:left">x &divide; 0 não existe</td></tr>
+    <tr><td style="text-align:left">x &minus; y</td><td>&#8469;</td><td class="f">Não</td><td style="text-align:left">1 &minus; 10 &notin; &#8469; (não é fechado)</td></tr>
+    <tr><td style="text-align:left">&minus;x (unária)</td><td>&#8484;</td><td class="v">Sim</td><td style="text-align:left">o negativo de inteiro é inteiro</td></tr>
+    <tr><td style="text-align:left">&minus;x (unária)</td><td>&#8469;</td><td class="f">Não</td><td style="text-align:left">&minus;3 &notin; &#8469;</td></tr>
+    <tr><td style="text-align:left">P &and; Q</td><td>fbfs</td><td class="v">Sim</td><td style="text-align:left">conectivos da aula 1 geram outra fbf</td></tr>
+  </table>
+
+  <h2>4. Operações em conjuntos</h2>
+  <p>Todos os conjuntos em discussão ficam dentro de um <strong>conjunto universo</strong> S (o retângulo dos diagramas). Os diagramas de Venn mostram o resultado de cada operação na área pintada.</p>
+
+  <div class="venn-grid">
+    <figure>
+      <svg class="venn" viewBox="0 0 200 130" role="img" aria-label="União">
+        <rect class="box" x="5" y="5" width="190" height="120" rx="6"/>
+        <circle class="sh" cx="80" cy="68" r="38"/><circle class="sh" cx="120" cy="68" r="38"/>
+        <circle class="ol" cx="80" cy="68" r="38"/><circle class="ol" cx="120" cy="68" r="38"/>
+        <text x="58" y="72">A</text><text x="134" y="72">B</text><text x="12" y="22">S</text>
+      </svg>
+      <figcaption>A &cup; B<small>união: está em A <strong>ou</strong> em B</small></figcaption>
+    </figure>
+    <figure>
+      <svg class="venn" viewBox="0 0 200 130" role="img" aria-label="Interseção">
+        <defs><clipPath id="clipA1"><circle cx="80" cy="68" r="38"/></clipPath></defs>
+        <rect class="box" x="5" y="5" width="190" height="120" rx="6"/>
+        <circle class="sh" cx="120" cy="68" r="38" clip-path="url(#clipA1)"/>
+        <circle class="ol" cx="80" cy="68" r="38"/><circle class="ol" cx="120" cy="68" r="38"/>
+        <text x="58" y="72">A</text><text x="134" y="72">B</text><text x="12" y="22">S</text>
+      </svg>
+      <figcaption>A &cap; B<small>interseção: está em A <strong>e</strong> em B</small></figcaption>
+    </figure>
+    <figure>
+      <svg class="venn" viewBox="0 0 200 130" role="img" aria-label="Diferença">
+        <rect class="box" x="5" y="5" width="190" height="120" rx="6"/>
+        <circle class="sh" cx="80" cy="68" r="38"/>
+        <circle class="hole" cx="120" cy="68" r="38"/>
+        <circle class="ol" cx="80" cy="68" r="38"/><circle class="ol" cx="120" cy="68" r="38"/>
+        <text x="58" y="72">A</text><text x="134" y="72">B</text><text x="12" y="22">S</text>
+      </svg>
+      <figcaption>A &minus; B<small>diferença: está em A e <strong>não</strong> em B</small></figcaption>
+    </figure>
+    <figure>
+      <svg class="venn" viewBox="0 0 200 130" role="img" aria-label="Complemento">
+        <rect class="box" x="5" y="5" width="190" height="120" rx="6"/>
+        <rect class="sh" x="5" y="5" width="190" height="120" rx="6"/>
+        <circle class="hole" cx="100" cy="68" r="38"/>
+        <circle class="ol" cx="100" cy="68" r="38"/>
+        <text x="96" y="72">A</text><text x="12" y="22">S</text>
+      </svg>
+      <figcaption>A&prime;<small>complemento: tudo de S que <strong>não</strong> está em A</small></figcaption>
+    </figure>
+  </div>
+
+  <p>Exemplo: S = alunos da universidade, A = alunos de computação, B = alunos de engenharia de software.</p>
+  <table class="truth">
+    <tr><th>Operação</th><th style="text-align:left">Definição</th><th style="text-align:left">No exemplo</th></tr>
+    <tr><td style="font-family:var(--font-data)">A &cup; B</td><td style="text-align:left; font-family:var(--font-data)">{x | x &isin; A ou x &isin; B}</td><td style="text-align:left">quem cursa computação, engenharia de software ou ambos</td></tr>
+    <tr><td style="font-family:var(--font-data)">A &cap; B</td><td style="text-align:left; font-family:var(--font-data)">{x | x &isin; A e x &isin; B}</td><td style="text-align:left">quem cursa os dois ao mesmo tempo</td></tr>
+    <tr><td style="font-family:var(--font-data)">A &minus; B</td><td style="text-align:left; font-family:var(--font-data)">{x | x &isin; A e x &notin; B}</td><td style="text-align:left">só computação</td></tr>
+    <tr><td style="font-family:var(--font-data)">A&prime;</td><td style="text-align:left; font-family:var(--font-data)">{x | x &isin; S e x &notin; A}</td><td style="text-align:left">quem não cursa computação</td></tr>
+  </table>
+  <p>Se A &cap; B = &empty;, A e B são <strong>disjuntos</strong> (não têm nada em comum). Ex.: A &minus; B e B &minus; A são sempre disjuntos.</p>
+
+  <div class="card">
+    <p style="margin:0 0 0.5rem"><strong>Busca na web (aula 1):</strong> "carros usados" E (Ford OU Volkswagen) E NÃO caminhões</p>
+    <p class="step">U &cap; (F &cup; V) &cap; C&prime;</p>
+    <p style="margin:0.4rem 0 0; font-size:0.9rem; color:var(--ink-2)">E vira &cap;, OU vira &cup;, NÃO vira complemento.</p>
+  </div>
+
+  <p>Em Python, <code>set</code> já tem essas operações:</p>
+  <pre>A = {1, 3, 5, 7, 9}
+B = {3, 5, 6, 10, 11}
+
+<span class="fn">print</span>(A | B)
+<span class="fn">print</span>(A &amp; B)
+<span class="fn">print</span>(A - B)
+<span class="fn">print</span>(A &lt;= B)</pre>
+  <table class="truth">
+    <tr><th style="text-align:left">Python</th><th>Matemática</th><th style="text-align:left">Resultado</th></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">A | B</td><td>A &cup; B</td><td style="text-align:left; font-family:var(--font-data)">{1, 3, 5, 6, 7, 9, 10, 11}</td></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">A &amp; B</td><td>A &cap; B</td><td style="text-align:left; font-family:var(--font-data)">{3, 5}</td></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">A - B</td><td>A &minus; B</td><td style="text-align:left; font-family:var(--font-data)">{1, 7, 9}</td></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">A &lt;= B</td><td>A &sube; B</td><td style="text-align:left" class="f">False</td></tr>
+  </table>
+
+  <h3>Produto cartesiano</h3>
+  <p><strong>A &times; B</strong> é o conjunto de todos os pares ordenados (x, y) com x &isin; A e y &isin; B.</p>
+  <div class="card">
+    <p style="margin:0 0 0.5rem"><strong>Analogia:</strong> combos de lanchonete. Cada combo é um par (lanche, bebida).</p>
+    <table class="truth" style="margin:0.4rem auto 0">
+      <tr><th>A &times; B</th><th>suco</th><th>refri</th></tr>
+      <tr><th>x-burguer</th><td style="font-family:var(--font-data)">(x-burguer, suco)</td><td style="font-family:var(--font-data)">(x-burguer, refri)</td></tr>
+      <tr><th>misto</th><td style="font-family:var(--font-data)">(misto, suco)</td><td style="font-family:var(--font-data)">(misto, refri)</td></tr>
+    </table>
+    <p style="margin:0.6rem 0 0">2 lanches &times; 2 bebidas = 4 combos.</p>
+  </div>
+  <p>A &times; A se escreve <strong>A&sup2;</strong>; A<sup>n</sup> é o conjunto das n-uplas (x<sub>1</sub>, ..., x<sub>n</sub>) de elementos de A.</p>
+  <pre><span class="kw">from</span> itertools <span class="kw">import</span> product
+
+lanches = {<span class="str">"x-burguer"</span>, <span class="str">"misto"</span>}
+bebidas = {<span class="str">"suco"</span>, <span class="str">"refri"</span>}
+
+combos = <span class="fn">set</span>(<span class="fn">product</span>(lanches, bebidas))
+<span class="fn">print</span>(combos)
+<span class="fn">print</span>(<span class="fn">len</span>(combos))</pre>
+
+  <h2>5. Conjuntos enumeráveis e não enumeráveis</h2>
+  <p>A <strong>cardinalidade</strong> |S| é o número de elementos de um conjunto finito. Ex.: |{2, 5, 9}| = 3.</p>
+  <div class="card">
+    <p style="margin:0"><strong>Analogia:</strong> uma fila com senhas 1, 2, 3, ... Um conjunto infinito é <strong>enumerável</strong> se dá para distribuir senhas de modo que <strong>todo</strong> elemento seja chamado em algum momento.</p>
+  </div>
+  <table class="truth">
+    <tr><th style="text-align:left">Conjunto</th><th>Enumerável?</th><th style="text-align:left">Fila</th></tr>
+    <tr><td style="text-align:left">&#8469;</td><td class="v">Sim</td><td style="text-align:left; font-family:var(--font-data)">0, 1, 2, 3, ...</td></tr>
+    <tr><td style="text-align:left">Pares positivos</td><td class="v">Sim</td><td style="text-align:left; font-family:var(--font-data)">2, 4, 6, 8, ...</td></tr>
+    <tr><td style="text-align:left">&#8474;<sup>+</sup> (racionais positivos)</td><td class="v">Sim</td><td style="text-align:left; font-family:var(--font-data)">1/1, 2/1, 1/2, 1/3, 3/1, ...</td></tr>
+    <tr><td style="text-align:left">Reais entre 0 e 1</td><td class="f">Não</td><td style="text-align:left">nenhuma fila chama todos (Cantor)</td></tr>
+  </table>
+
+  <footer class="nav">
+    <a class="back" href="../index.html">&larr; Voltar ao mapa de aulas</a>
+  </footer>
+
+</div>
