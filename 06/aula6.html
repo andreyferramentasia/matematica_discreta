@@ -198,63 +198,6 @@ com_repeticao = 0
     <tr><td style="text-align:left">Depois de K a jogada seguinte tem 2 opções; depois de C, só 1. O número de opções muda de ramo para ramo.</td></tr>
   </table>
 
-  <h2>Exercícios</h2>
-  <ol class="exercises">
-    <li>
-      Uma loja de iogurte tem as seguintes opções:
-      <pre style="margin:0.5rem 0">sabores = [<span class="str">"baunilha"</span>, <span class="str">"morango"</span>, <span class="str">"limão"</span>, <span class="str">"cereja"</span>, <span class="str">"pêssego"</span>]
-acompanhamentos = [<span class="str">"chocolate"</span>, <span class="str">"castanha"</span>, <span class="str">"coco"</span>]
-coberturas = [<span class="str">"creme"</span>, <span class="str">"caramelo"</span>]</pre>
-      Escreva a função <code>total_sobremesas(sabores, acompanhamentos, coberturas)</code> que devolve quantas sobremesas diferentes existem escolhendo um de cada.
-      <details class="answer">
-        <summary>Ver resposta</summary>
-        <div class="reveal">
-          <pre style="margin:0"><span class="kw">from</span> itertools <span class="kw">import</span> product
-
-sabores = [<span class="str">"baunilha"</span>, <span class="str">"morango"</span>, <span class="str">"limão"</span>, <span class="str">"cereja"</span>, <span class="str">"pêssego"</span>]
-acompanhamentos = [<span class="str">"chocolate"</span>, <span class="str">"castanha"</span>, <span class="str">"coco"</span>]
-coberturas = [<span class="str">"creme"</span>, <span class="str">"caramelo"</span>]
-
-<span class="kw">def</span> <span class="fn">total_sobremesas</span>(sabores, acompanhamentos, coberturas):
-    <span class="kw">return</span> <span class="fn">len</span>(<span class="fn">list</span>(<span class="fn">product</span>(sabores, acompanhamentos, coberturas)))
-
-<span class="fn">print</span>(<span class="fn">total_sobremesas</span>(sabores, acompanhamentos, coberturas))</pre>
-          <p style="margin:0.5rem 0 0">Resultado: 30, o mesmo que 5 &middot; 3 &middot; 2.</p>
-        </div>
-      </details>
-    </li>
-    <li>
-      Escreva a função <code>senhas_sem_repeticao(n)</code> que devolve quantas senhas de n dígitos existem sem repetir nenhum dígito. Teste com n = 4.
-      <details class="answer">
-        <summary>Ver resposta</summary>
-        <div class="reveal">
-          <pre style="margin:0"><span class="kw">from</span> itertools <span class="kw">import</span> permutations
-
-<span class="kw">def</span> <span class="fn">senhas_sem_repeticao</span>(n):
-    <span class="kw">return</span> <span class="fn">len</span>(<span class="fn">list</span>(<span class="fn">permutations</span>(<span class="str">"0123456789"</span>, n)))
-
-<span class="fn">print</span>(<span class="fn">senhas_sem_repeticao</span>(4))</pre>
-          <p style="margin:0.5rem 0 0">Resultado: 5040, o mesmo que 10 &middot; 9 &middot; 8 &middot; 7.</p>
-        </div>
-      </details>
-    </li>
-    <li>
-      Um dado é lançado duas vezes. Escreva um programa que gere todas as possíveis combinações dos dois lançamentos e mostre apenas aquelas em que o mesmo valor aparece nas duas jogadas.
-      <details class="answer">
-        <summary>Ver resposta</summary>
-        <div class="reveal">
-          <pre style="margin:0"><span class="kw">from</span> itertools <span class="kw">import</span> product
-
-dado = [1, 2, 3, 4, 5, 6]
-<span class="kw">for</span> n <span class="kw">in</span> <span class="fn">list</span>(<span class="fn">product</span>(dado, repeat=2)):
-    <span class="kw">if</span> <span class="fn">len</span>(<span class="fn">set</span>(n)) &lt; 2:
-        <span class="fn">print</span>(n)</pre>
-          <p style="margin:0.5rem 0 0">Resultado: (1, 1), (2, 2), (3, 3), (4, 4), (5, 5) e (6, 6). São 6 de um total de 6 &middot; 6 = 36 combinações.</p>
-        </div>
-      </details>
-    </li>
-  </ol>
-
   <footer class="nav">
     <a class="back" href="../index.html">&larr; Voltar ao mapa de aulas</a>
   </footer>
