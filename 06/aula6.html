@@ -1,0 +1,262 @@
+<meta charset="UTF-8">
+<title>Aula 6: Contagem | Matemática Discreta</title>
+<link rel="stylesheet" href="../assets/estilo.css">
+<style>
+  table.truth td[style*="text-align:left"], table.truth th[style*="text-align:left"] { text-align: left; }
+  .step { text-align: center; font-family: var(--font-data); margin: 0.35rem 0; }
+  .conclusion { text-align: center; color: var(--accent); font-weight: 600; margin: 0.6rem 0 0; }
+
+  .tree { width: 100%; max-width: 420px; height: auto; display: block; margin: 1rem auto 0.3rem; }
+  .tree line { stroke: var(--ink-2); stroke-width: 1.5; }
+  .tree line.cut { stroke: var(--bad); stroke-dasharray: 4 4; }
+  .tree circle { fill: var(--ink); }
+  .tree circle.leaf { fill: var(--content); }
+  .tree circle.cut { fill: var(--bad); }
+  .tree text { fill: var(--ink); font-family: var(--font-data); font-size: 13px; text-anchor: middle; }
+  .tree text.edge { fill: var(--accent); font-weight: 600; }
+  .tree text.cut { fill: var(--bad); }
+  .tree-caption { text-align: center; font-size: 0.9rem; color: var(--ink-2); margin: 0 0 1rem; }
+</style>
+
+<div class="page">
+
+  <a class="back" href="../index.html">&larr; Voltar ao mapa de aulas</a>
+
+  <header class="masthead">
+    <p class="eyebrow">Matemática Discreta · Aula 06</p>
+    <h1>Contagem</h1>
+    <p class="sub">Princípio da multiplicação, princípio da adição e árvores de decisão. (Gersting, cap. 4.2)</p>
+  </header>
+
+  <h2>1. Por que contar</h2>
+  <p><strong>Combinatória</strong> é o ramo da matemática que conta. Na prática, é achar a cardinalidade |S| de um conjunto finito (aula 5).</p>
+  <table class="truth">
+    <tr><th style="text-align:left">Pergunta do dia a dia</th><th style="text-align:left">Conjunto contado</th></tr>
+    <tr><td style="text-align:left">Quantas senhas de 4 dígitos existem?</td><td style="text-align:left">todas as senhas possíveis</td></tr>
+    <tr><td style="text-align:left">Quantos endereços de internet cabem no IPv4?</td><td style="text-align:left">todas as sequências de 32 bits</td></tr>
+    <tr><td style="text-align:left">Quantas pizzas diferentes dá para pedir?</td><td style="text-align:left">todas as combinações do cardápio</td></tr>
+  </table>
+
+  <h2>2. Princípio da multiplicação</h2>
+  <div class="card connective">
+    <div class="connective-text">
+      <h3><span class="sym">n<sub>1</sub> &times; n<sub>2</sub></span> · Multiplicação</h3>
+      <p class="idea">Ideia: uma escolha <strong>e depois</strong> outra.</p>
+      <p>Uma criança escolhe 1 bala (rosa ou preta) e depois 1 chiclete (amarelo, verde ou branco). Cada bala abre 3 caminhos.</p>
+      <p class="resumo">Resumo: etapas em sequência &rarr; multiplique as opções de cada etapa.</p>
+    </div>
+  </div>
+
+  <svg class="tree" viewBox="0 0 400 190" role="img" aria-label="Árvore bala e chiclete">
+    <line x1="200" y1="18" x2="100" y2="70"/><line x1="200" y1="18" x2="300" y2="70"/>
+    <line x1="100" y1="70" x2="40" y2="135"/><line x1="100" y1="70" x2="100" y2="135"/><line x1="100" y1="70" x2="160" y2="135"/>
+    <line x1="300" y1="70" x2="240" y2="135"/><line x1="300" y1="70" x2="300" y2="135"/><line x1="300" y1="70" x2="360" y2="135"/>
+    <circle cx="200" cy="18" r="4"/>
+    <circle cx="100" cy="70" r="4"/><circle cx="300" cy="70" r="4"/>
+    <circle class="leaf" cx="40" cy="135" r="5"/><circle class="leaf" cx="100" cy="135" r="5"/><circle class="leaf" cx="160" cy="135" r="5"/>
+    <circle class="leaf" cx="240" cy="135" r="5"/><circle class="leaf" cx="300" cy="135" r="5"/><circle class="leaf" cx="360" cy="135" r="5"/>
+    <text class="edge" x="140" y="38">R</text><text class="edge" x="260" y="38">P</text>
+    <text class="edge" x="60" y="100">A</text><text class="edge" x="110" y="105">V</text><text class="edge" x="140" y="100">B</text>
+    <text class="edge" x="260" y="100">A</text><text class="edge" x="310" y="105">V</text><text class="edge" x="340" y="100">B</text>
+    <text x="40" y="160">RA</text><text x="100" y="160">RV</text><text x="160" y="160">RB</text>
+    <text x="240" y="160">PA</text><text x="300" y="160">PV</text><text x="360" y="160">PB</text>
+    <text x="200" y="183">2 &times; 3 = 6 resultados</text>
+  </svg>
+  <p class="tree-caption">Nível 1: bala (R ou P). Nível 2: chiclete (A, V ou B).</p>
+
+  <table class="truth">
+    <tr><th style="text-align:left">Problema</th><th style="text-align:left">Etapas</th><th>Conta</th></tr>
+    <tr><td style="text-align:left">Senha de 4 dígitos</td><td style="text-align:left">dígito, dígito, dígito, dígito</td><td style="font-family:var(--font-data)">10 &middot; 10 &middot; 10 &middot; 10 = 10.000</td></tr>
+    <tr><td style="text-align:left">Pizza</td><td style="text-align:left">massa (3), tamanho (3), sabor (5)</td><td style="font-family:var(--font-data)">3 &middot; 3 &middot; 5 = 45</td></tr>
+    <tr><td style="text-align:left">Endereço IPv4</td><td style="text-align:left">32 bits, cada um 0 ou 1</td><td style="font-family:var(--font-data)">2<sup>32</sup> &asymp; 4,3 bilhões</td></tr>
+    <tr><td style="text-align:left">Endereço IPv6</td><td style="text-align:left">128 bits</td><td style="font-family:var(--font-data)">2<sup>128</sup> &asymp; 3,4 &middot; 10<sup>38</sup></td></tr>
+  </table>
+
+  <h3>Com ou sem repetição</h3>
+  <p>Se um item não pode ser usado de novo, cada etapa tem uma opção a menos.</p>
+  <table class="truth">
+    <tr><th style="text-align:left">Escolher 3 representantes entre 25 pessoas</th><th>Conta</th></tr>
+    <tr><td style="text-align:left">cada pessoa só pode ser escolhida uma vez</td><td style="font-family:var(--font-data)">25 &middot; 24 &middot; 23 = 13.800</td></tr>
+    <tr><td style="text-align:left">a mesma pessoa pode estar em mais de uma comissão</td><td style="font-family:var(--font-data)">25 &middot; 25 &middot; 25 = 15.625</td></tr>
+  </table>
+
+  <div class="card tip">
+    <p style="margin:0"><strong>Ligação com a aula 5:</strong> montar um par (x, y) de A &times; B é escolher x e depois y. Por isso |A &times; B| = |A| &middot; |B|.</p>
+  </div>
+
+  <p>Em Python, <code>product</code> gera todas as combinações de etapas e <code>permutations</code> gera as sem repetição:</p>
+  <pre><span class="kw">from</span> itertools <span class="kw">import</span> product, permutations
+
+massas = [<span class="str">"fina"</span>, <span class="str">"normal"</span>, <span class="str">"calzone"</span>]
+tamanhos = [<span class="str">"P"</span>, <span class="str">"M"</span>, <span class="str">"G"</span>]
+sabores = [<span class="str">"margherita"</span>, <span class="str">"calabresa"</span>, <span class="str">"cogumelo"</span>, <span class="str">"presunto"</span>, <span class="str">"portuguesa"</span>]
+<span class="fn">print</span>(<span class="fn">len</span>(<span class="fn">list</span>(<span class="fn">product</span>(massas, tamanhos, sabores))))
+
+digitos = <span class="str">"0123456789"</span>
+<span class="fn">print</span>(<span class="fn">len</span>(<span class="fn">list</span>(<span class="fn">product</span>(digitos, repeat=4))))
+<span class="fn">print</span>(<span class="fn">len</span>(<span class="fn">list</span>(<span class="fn">permutations</span>(digitos, 4))))</pre>
+  <p style="margin-top:-0.3rem; font-size:0.9rem; color:var(--ink-2)">Saída: 45, 10000 e 5040.</p>
+
+  <h2>3. Princípio da adição</h2>
+  <div class="card connective">
+    <div class="connective-text">
+      <h3><span class="sym">n<sub>1</sub> + n<sub>2</sub></span> · Adição</h3>
+      <p class="idea">Ideia: uma escolha <strong>ou</strong> outra, nunca as duas.</p>
+      <p>Sobremesa: 3 tortas ou 4 bolos. Você come só uma, então são 3 + 4 = 7 opções.</p>
+      <p class="resumo">Resumo: casos separados &rarr; some as opções de cada caso.</p>
+    </div>
+  </div>
+
+  <div class="card tip">
+    <p style="margin:0 0 0.5rem"><strong>Só vale para casos disjuntos (sem nada em comum).</strong></p>
+    <ul style="margin:0">
+      <li>23 carros e 14 caminhões: <span class="v">23 + 14 = 37</span> veículos.</li>
+      <li>23 carros, 14 caminhões e 17 vermelhos: <span class="f">não dá para somar</span>, um carro vermelho seria contado duas vezes.</li>
+    </ul>
+  </div>
+
+  <h3>Qual princípio usar?</h3>
+  <table class="truth">
+    <tr><th style="text-align:left">A tarefa é...</th><th style="text-align:left">Palavra-chave</th><th>Princípio</th></tr>
+    <tr><td style="text-align:left">uma sequência de etapas</td><td style="text-align:left">"e depois"</td><td>multiplica</td></tr>
+    <tr><td style="text-align:left">dividida em casos que não se misturam</td><td style="text-align:left">"ou"</td><td>soma</td></tr>
+  </table>
+
+  <h2>4. Usando os dois juntos</h2>
+  <p>Separe em casos (soma) e conte cada caso em etapas (multiplica).</p>
+
+  <div class="card">
+    <p style="margin:0 0 0.5rem"><strong>Quantos números de 4 dígitos começam com 4 ou 5?</strong></p>
+    <p class="step">começam com 4: 1 &middot; 10 &middot; 10 &middot; 10 = 1000</p>
+    <p class="step">começam com 5: 1 &middot; 10 &middot; 10 &middot; 10 = 1000</p>
+    <p class="step">1000 + 1000 = 2000</p>
+    <p style="text-align:center; margin:0.6rem 0 0.2rem">Outro caminho: o 1º dígito tem 2 opções.</p>
+    <p class="step">2 &middot; 10 &middot; 10 &middot; 10 = 2000</p>
+    <p class="conclusion">Dois caminhos, mesma resposta: boa forma de conferir.</p>
+  </div>
+
+  <div class="card">
+    <p style="margin:0 0 0.5rem"><strong>Quantos inteiros de 100 a 999 são pares?</strong></p>
+    <p class="step">1º dígito: 1 a 9 &rarr; 9 opções</p>
+    <p class="step">2º dígito: 0 a 9 &rarr; 10 opções</p>
+    <p class="step">3º dígito: 0, 2, 4, 6, 8 &rarr; 5 opções</p>
+    <p class="step">9 &middot; 10 &middot; 5 = 450</p>
+    <p class="conclusion">Logo, 450 números pares.</p>
+  </div>
+
+  <h3>Contar o contrário</h3>
+  <p>Às vezes é mais fácil contar o que você <strong>não</strong> quer e subtrair do total.</p>
+  <div class="card">
+    <p style="margin:0 0 0.5rem"><strong>Quantas senhas de 4 dígitos têm pelo menos um dígito repetido?</strong></p>
+    <p class="step">total: 10 &middot; 10 &middot; 10 &middot; 10 = 10.000</p>
+    <p class="step">sem repetição: 10 &middot; 9 &middot; 8 &middot; 7 = 5040</p>
+    <p class="step">10.000 &minus; 5040 = 4960</p>
+    <p class="conclusion">Logo, 4960 senhas têm dígito repetido.</p>
+  </div>
+  <pre><span class="kw">from</span> itertools <span class="kw">import</span> product
+
+com_repeticao = 0
+<span class="kw">for</span> senha <span class="kw">in</span> <span class="fn">product</span>(<span class="str">"0123456789"</span>, repeat=4):
+    <span class="kw">if</span> <span class="fn">len</span>(<span class="fn">set</span>(senha)) &lt; 4:
+        com_repeticao = com_repeticao + 1
+
+<span class="fn">print</span>(com_repeticao)</pre>
+  <p style="margin-top:-0.3rem; font-size:0.9rem; color:var(--ink-2)"><code>set(senha)</code> remove os repetidos: se sobram menos de 4 dígitos, algum se repetiu.</p>
+
+  <h2>5. Árvores de decisão</h2>
+  <p>Quando o número de opções <strong>depende</strong> da escolha anterior, o princípio da multiplicação não funciona. Aí desenhamos a árvore e contamos as folhas.</p>
+  <div class="card">
+    <p style="margin:0"><strong>Exemplo:</strong> jogar uma moeda 3 vezes (C = cara, K = coroa) sem sair duas caras seguidas. Depois de um C, o próximo só pode ser K.</p>
+  </div>
+
+  <svg class="tree" viewBox="0 0 400 200" role="img" aria-label="Árvore de moedas sem duas caras seguidas">
+    <line x1="190" y1="18" x2="80" y2="65"/><line x1="190" y1="18" x2="265" y2="65"/>
+    <line class="cut" x1="80" y1="65" x2="30" y2="112"/><line x1="80" y1="65" x2="80" y2="112"/>
+    <line x1="265" y1="65" x2="200" y2="112"/><line x1="265" y1="65" x2="330" y2="112"/>
+    <line x1="80" y1="112" x2="40" y2="160"/><line x1="80" y1="112" x2="120" y2="160"/>
+    <line class="cut" x1="200" y1="112" x2="165" y2="160"/><line x1="200" y1="112" x2="210" y2="160"/>
+    <line x1="330" y1="112" x2="290" y2="160"/><line x1="330" y1="112" x2="370" y2="160"/>
+    <circle cx="190" cy="18" r="4"/>
+    <circle cx="80" cy="65" r="4"/><circle cx="265" cy="65" r="4"/>
+    <circle class="cut" cx="30" cy="112" r="4"/><circle cx="80" cy="112" r="4"/><circle cx="200" cy="112" r="4"/><circle cx="330" cy="112" r="4"/>
+    <circle class="leaf" cx="40" cy="160" r="5"/><circle class="leaf" cx="120" cy="160" r="5"/>
+    <circle class="cut" cx="165" cy="160" r="4"/><circle class="leaf" cx="210" cy="160" r="5"/>
+    <circle class="leaf" cx="290" cy="160" r="5"/><circle class="leaf" cx="370" cy="160" r="5"/>
+    <text class="edge" x="128" y="35">C</text><text class="edge" x="235" y="35">K</text>
+    <text class="cut" x="45" y="85">C</text><text class="edge" x="90" y="92">K</text>
+    <text class="edge" x="223" y="85">C</text><text class="edge" x="306" y="85">K</text>
+    <text class="edge" x="52" y="132">C</text><text class="edge" x="110" y="132">K</text>
+    <text class="cut" x="172" y="132">C</text><text class="edge" x="214" y="138">K</text>
+    <text class="edge" x="300" y="132">C</text><text class="edge" x="360" y="132">K</text>
+    <text x="40" y="182">CKC</text><text x="120" y="182">CKK</text><text x="210" y="182">KCK</text>
+    <text x="290" y="182">KKC</text><text x="370" y="182">KKK</text>
+  </svg>
+  <p class="tree-caption">Ramos tracejados em vermelho: proibidos (CC). Sobram 5 folhas.</p>
+
+  <table class="truth">
+    <tr><th style="text-align:left">Por que não dá para multiplicar?</th></tr>
+    <tr><td style="text-align:left">Depois de K a jogada seguinte tem 2 opções; depois de C, só 1. O número de opções muda de ramo para ramo.</td></tr>
+  </table>
+
+  <h2>Exercícios</h2>
+  <ol class="exercises">
+    <li>
+      Uma loja de iogurte tem as seguintes opções:
+      <pre style="margin:0.5rem 0">sabores = [<span class="str">"baunilha"</span>, <span class="str">"morango"</span>, <span class="str">"limão"</span>, <span class="str">"cereja"</span>, <span class="str">"pêssego"</span>]
+acompanhamentos = [<span class="str">"chocolate"</span>, <span class="str">"castanha"</span>, <span class="str">"coco"</span>]
+coberturas = [<span class="str">"creme"</span>, <span class="str">"caramelo"</span>]</pre>
+      Escreva a função <code>total_sobremesas(sabores, acompanhamentos, coberturas)</code> que devolve quantas sobremesas diferentes existem escolhendo um de cada.
+      <details class="answer">
+        <summary>Ver resposta</summary>
+        <div class="reveal">
+          <pre style="margin:0"><span class="kw">from</span> itertools <span class="kw">import</span> product
+
+sabores = [<span class="str">"baunilha"</span>, <span class="str">"morango"</span>, <span class="str">"limão"</span>, <span class="str">"cereja"</span>, <span class="str">"pêssego"</span>]
+acompanhamentos = [<span class="str">"chocolate"</span>, <span class="str">"castanha"</span>, <span class="str">"coco"</span>]
+coberturas = [<span class="str">"creme"</span>, <span class="str">"caramelo"</span>]
+
+<span class="kw">def</span> <span class="fn">total_sobremesas</span>(sabores, acompanhamentos, coberturas):
+    <span class="kw">return</span> <span class="fn">len</span>(<span class="fn">list</span>(<span class="fn">product</span>(sabores, acompanhamentos, coberturas)))
+
+<span class="fn">print</span>(<span class="fn">total_sobremesas</span>(sabores, acompanhamentos, coberturas))</pre>
+          <p style="margin:0.5rem 0 0">Resultado: 30, o mesmo que 5 &middot; 3 &middot; 2.</p>
+        </div>
+      </details>
+    </li>
+    <li>
+      Escreva a função <code>senhas_sem_repeticao(n)</code> que devolve quantas senhas de n dígitos existem sem repetir nenhum dígito. Teste com n = 4.
+      <details class="answer">
+        <summary>Ver resposta</summary>
+        <div class="reveal">
+          <pre style="margin:0"><span class="kw">from</span> itertools <span class="kw">import</span> permutations
+
+<span class="kw">def</span> <span class="fn">senhas_sem_repeticao</span>(n):
+    <span class="kw">return</span> <span class="fn">len</span>(<span class="fn">list</span>(<span class="fn">permutations</span>(<span class="str">"0123456789"</span>, n)))
+
+<span class="fn">print</span>(<span class="fn">senhas_sem_repeticao</span>(4))</pre>
+          <p style="margin:0.5rem 0 0">Resultado: 5040, o mesmo que 10 &middot; 9 &middot; 8 &middot; 7.</p>
+        </div>
+      </details>
+    </li>
+    <li>
+      Um dado é lançado duas vezes. Escreva um programa que gere todas as possíveis combinações dos dois lançamentos e mostre apenas aquelas em que o mesmo valor aparece nas duas jogadas.
+      <details class="answer">
+        <summary>Ver resposta</summary>
+        <div class="reveal">
+          <pre style="margin:0"><span class="kw">from</span> itertools <span class="kw">import</span> product
+
+dado = [1, 2, 3, 4, 5, 6]
+<span class="kw">for</span> n <span class="kw">in</span> <span class="fn">list</span>(<span class="fn">product</span>(dado, repeat=2)):
+    <span class="kw">if</span> <span class="fn">len</span>(<span class="fn">set</span>(n)) &lt; 2:
+        <span class="fn">print</span>(n)</pre>
+          <p style="margin:0.5rem 0 0">Resultado: (1, 1), (2, 2), (3, 3), (4, 4), (5, 5) e (6, 6). São 6 de um total de 6 &middot; 6 = 36 combinações.</p>
+        </div>
+      </details>
+    </li>
+  </ol>
+
+  <footer class="nav">
+    <a class="back" href="../index.html">&larr; Voltar ao mapa de aulas</a>
+  </footer>
+
+</div>
