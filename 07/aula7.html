@@ -1,0 +1,421 @@
+<meta charset="UTF-8">
+<title>Aula 7: RSA parte 1 | Matemática Discreta</title>
+<link rel="stylesheet" href="../assets/estilo.css">
+<style>
+  table.truth td[style*="text-align:left"], table.truth th[style*="text-align:left"] { text-align: left; }
+  .step { text-align: center; font-family: var(--font-data); margin: 0.35rem 0; }
+  .conclusion { text-align: center; color: var(--accent); font-weight: 600; margin: 0.6rem 0 0; }
+  .b6, .b18, .b24 { padding: 0.05rem 0.3rem; border-radius: 4px; font-weight: 700; }
+  .b6 { background: var(--ok-bg); color: var(--ok); }
+  .b18 { background: var(--content-bg); color: var(--content); }
+  .b24 { background: var(--revisao-bg); color: var(--revisao); }
+  .umb { display: block; margin: 0.3rem auto; max-width: 100%; height: auto; overflow: visible; }
+  .umb text { font-family: var(--font-data); font-size: 16px; text-anchor: middle; fill: var(--ink); }
+  .umb text.t6 { fill: var(--ok); font-weight: 700; }
+  .umb text.t18 { fill: var(--content); font-weight: 700; }
+  .umb text.t24 { fill: var(--revisao); font-weight: 700; }
+  .umb text.tm { fill: var(--bad); font-weight: 700; }
+  .umb rect.r6 { fill: var(--ok-bg); }
+  .umb rect.r18 { fill: var(--content-bg); }
+  .umb rect.r24 { fill: var(--revisao-bg); }
+  .umb path { fill: none; stroke: var(--bad); stroke-width: 1.5; }
+  .seta { fill: var(--bad); }
+  .hint { display: block; font-family: var(--font-body); font-size: 0.8rem; color: var(--ink-2); margin: 0.1rem 0 0.5rem; }
+  .note { margin-top: -0.3rem; font-size: 0.9rem; color: var(--ink-2); }
+
+  .nums { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.8rem 0 0.3rem; }
+  .num { width: 2.2rem; height: 2.2rem; display: flex; align-items: center; justify-content: center; border-radius: 6px; border: 1px solid var(--border); font-family: var(--font-data); font-size: 0.85rem; color: var(--ink-2); }
+  .num.on { background: var(--ok-bg); color: var(--ok); border-color: var(--ok); font-weight: 600; }
+  .num.off { text-decoration: line-through; color: var(--bad); }
+  .hl { color: var(--bad); font-weight: 700; }
+  .nums.grid25 { display: grid; grid-template-columns: repeat(26, 2.2rem); }
+  @media (max-width: 1180px) { .nums.grid25 { display: flex; } }
+  .nums-caption { font-size: 0.9rem; color: var(--ink-2); margin: 0 0 1rem; }
+
+  .anatomy { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; margin: 1rem 0 0.4rem; font-family: var(--font-data); font-size: 0.95rem; }
+  .anatomy span { padding: 0.35rem 0.6rem; border-radius: 6px; border: 1px solid var(--border); background: var(--surface-2); }
+  .anatomy .a1 { border-color: var(--content); color: var(--content); }
+  .anatomy .a2 { border-color: var(--accent); color: var(--accent); }
+  .anatomy .a3 { border-color: var(--ok); color: var(--ok); }
+  .side { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .side > div { flex: 1 1 400px; min-width: 0; }
+  .side h3 { margin-top: 0.4rem; }
+</style>
+
+<div class="page">
+
+  <a class="back" href="../index.html">&larr; Voltar ao mapa de aulas</a>
+
+  <header class="masthead">
+    <p class="eyebrow">Matemática Discreta · Aula 07</p>
+    <h1>RSA parte 1: fundamentos matemáticos</h1>
+    <p class="sub">Divisores, primos, mdc, aritmética modular e a função fi de Euler: as peças que a aula 8 vai encaixar. (Gersting, cap. 2.3 e 2.4)</p>
+  </header>
+
+  <h2>1. Aonde queremos chegar</h2>
+  <p><strong>RSA</strong> (iniciais de Rivest, Shamir e Adleman, os três que o criaram em 1977) é o método de criptografia que protege o cadeado do navegador, o PIX e o login do banco.</p>
+
+  <div class="card connective">
+    <div class="connective-text">
+      <h3><span class="sym">(e, n)</span> e <span class="sym">(d, n)</span> · Chave pública e chave privada</h3>
+      <p class="idea">Ideia: um cadeado que qualquer um fecha, mas só você abre.</p>
+      <p>Você distribui cadeados abertos para todo mundo. Quem quiser te mandar algo põe numa caixa e fecha. Só a sua chave abre.</p>
+      <p class="resumo">Resumo: chave pública cifra, chave privada decifra.</p>
+    </div>
+  </div>
+
+  <table class="truth">
+    <tr><th style="text-align:left">Peça matemática</th><th style="text-align:left">Papel no RSA</th></tr>
+    <tr><td style="text-align:left">divisores e primos</td><td style="text-align:left">escolher p e q, calcular n = p &middot; q</td></tr>
+    <tr><td style="text-align:left">mdc, coprimos e algoritmo de Euclides</td><td style="text-align:left">escolher e coprimo com &phi;(n), achar d</td></tr>
+    <tr><td style="text-align:left">aritmética modular</td><td style="text-align:left">cifrar e decifrar</td></tr>
+    <tr><td style="text-align:left">função &phi; de Euler</td><td style="text-align:left">o número secreto que liga e a d</td></tr>
+  </table>
+
+  <h2>2. Divisores e list comprehension</h2>
+  <table class="truth">
+    <tr><th style="text-align:left">Notação</th><th style="text-align:left">Leitura</th><th style="text-align:left">Em Python</th></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">3 | 12</td><td style="text-align:left"><span class="v">verdadeiro</span>, 12 = 3 &middot; 4</td><td style="text-align:left"><code>12 % 3 == 0</code></td></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">5 | 12</td><td style="text-align:left"><span class="f">falso</span>, sobra resto 2</td><td style="text-align:left"><code>12 % 5 == 0</code></td></tr>
+  </table>
+
+  <p>Para listar todos os divisores de n, testamos cada candidato de 1 até n. Dois jeitos de escrever a mesma coisa:</p>
+
+  <div class="side">
+    <div>
+      <h3>Com laço for</h3>
+      <pre>n = 8
+divisores = []
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(1, n + 1):
+    <span class="kw">if</span> n % i == 0:
+        divisores.<span class="fn">append</span>(i)
+<span class="fn">print</span>(divisores)</pre>
+    </div>
+    <div>
+      <h3>Com list comprehension</h3>
+      <pre>n = 8
+divisores = [i <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(1, n + 1) <span class="kw">if</span> n % i == 0]
+<span class="fn">print</span>(divisores)</pre>
+    </div>
+  </div>
+  <p class="note">Saída dos dois: [1, 2, 4, 8].</p>
+
+  <div class="card connective">
+    <div class="connective-text">
+      <h3><span class="sym">[ ... for ... if ... ]</span> · List comprehension</h3>
+      <p class="idea">Ideia: montar uma lista numa linha, lendo da esquerda para a direita como uma frase.</p>
+      <p>É como a notação de conjuntos da aula 5: D = { i | 1 &le; i &le; 8 e 8 % i = 0 } vira <code>[i for i in range(1, 9) if 8 % i == 0]</code>.</p>
+      <p class="resumo">Resumo: o que guardar, de onde tirar, qual filtro aplicar.</p>
+    </div>
+  </div>
+
+  <div class="anatomy">
+    <span>[</span><span class="a1">i</span><span class="a2">for i in range(1, n + 1)</span><span class="a3">if n % i == 0</span><span>]</span>
+  </div>
+  <table class="truth">
+    <tr><th style="text-align:left">Parte</th><th style="text-align:left">Pergunta que responde</th><th style="text-align:left">No exemplo</th></tr>
+    <tr><td style="text-align:left; color:var(--content)">expressão</td><td style="text-align:left">o que vai para a lista?</td><td style="text-align:left">o próprio i</td></tr>
+    <tr><td style="text-align:left; color:var(--accent)">origem (for)</td><td style="text-align:left">de onde vêm os candidatos?</td><td style="text-align:left">1, 2, ..., n (o <code>range</code> para antes de n + 1)</td></tr>
+    <tr><td style="text-align:left; color:var(--ok)">filtro (if, opcional)</td><td style="text-align:left">quem entra?</td><td style="text-align:left">só quem divide n</td></tr>
+  </table>
+
+  <table class="truth">
+    <tr><th style="text-align:left">Variação</th><th style="text-align:left">Resultado</th></tr>
+    <tr><td style="text-align:left"><code>[i * i for i in range(1, 6)]</code></td><td style="text-align:left; font-family:var(--font-data)">[1, 4, 9, 16, 25]</td></tr>
+    <tr><td style="text-align:left"><code>[i for i in range(1, 11) if i % 2 == 0]</code></td><td style="text-align:left; font-family:var(--font-data)">[2, 4, 6, 8, 10]</td></tr>
+    <tr><td style="text-align:left"><code>[i % 5 for i in range(10)]</code></td><td style="text-align:left; font-family:var(--font-data)">[0, 1, 2, 3, 4, 0, 1, 2, 3, 4]</td></tr>
+  </table>
+
+  <p>Vamos reaproveitar essa função em toda a aula:</p>
+  <pre><span class="kw">def</span> <span class="fn">divisores</span>(n):
+    <span class="kw">return</span> [i <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(1, n + 1) <span class="kw">if</span> n % i == 0]
+
+<span class="fn">print</span>(<span class="fn">divisores</span>(12))</pre>
+  <p class="note">Saída: [1, 2, 3, 4, 6, 12].</p>
+
+  <h2>3. Números primos</h2>
+  <table class="truth">
+    <tr><th style="text-align:left">Tipo</th><th style="text-align:left">Definição</th><th style="text-align:left">Exemplos</th></tr>
+    <tr><td style="text-align:left">primo</td><td style="text-align:left">inteiro &gt; 1 cujo conjunto de divisores nos naturais tem exatamente 2 elementos: D(p) = {1, p}</td><td style="text-align:left; font-family:var(--font-data)">2, 3, 5, 7, 11, 13, ...</td></tr>
+    <tr><td style="text-align:left">composto</td><td style="text-align:left">inteiro &gt; 1 que não é primo</td><td style="text-align:left; font-family:var(--font-data)">4, 6, 8, 9, ...</td></tr>
+  </table>
+
+  <div class="nums grid25">
+    <span class="num on">2</span><span class="num on">3</span><span class="num">4</span><span class="num on">5</span><span class="num">6</span><span class="num on">7</span><span class="num">8</span><span class="num">9</span><span class="num">10</span><span class="num on">11</span><span class="num">12</span><span class="num on">13</span><span class="num">14</span><span class="num">15</span><span class="num">16</span><span class="num on">17</span><span class="num">18</span><span class="num on">19</span><span class="num">20</span><span class="num">21</span><span class="num">22</span><span class="num on">23</span><span class="num">24</span><span class="num">25</span><span class="num">26</span><span class="num">27</span><span class="num">28</span><span class="num on">29</span><span class="num">30</span><span class="num on">31</span><span class="num">32</span><span class="num">33</span><span class="num">34</span><span class="num">35</span><span class="num">36</span><span class="num on">37</span><span class="num">38</span><span class="num">39</span><span class="num">40</span><span class="num on">41</span><span class="num">42</span><span class="num on">43</span><span class="num">44</span><span class="num">45</span><span class="num">46</span><span class="num on">47</span><span class="num">48</span><span class="num">49</span><span class="num">50</span><span class="num">51</span><span class="num">52</span><span class="num on">53</span>
+  </div>
+  <p class="nums-caption">Em verde, os primos de 2 a 53.</p>
+
+  <pre><span class="kw">def</span> <span class="fn">eh_primo</span>(n):
+    <span class="kw">return</span> <span class="fn">len</span>(<span class="fn">divisores</span>(n)) == 2
+
+<span class="fn">print</span>([n <span class="kw">for</span> n <span class="kw">in</span> <span class="fn">range</span>(2, 54) <span class="kw">if</span> <span class="fn">eh_primo</span>(n)])</pre>
+  <p class="note">Saída: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53].</p>
+
+  <h2>4. MDC e o algoritmo de Euclides</h2>
+  <p><strong>mdc</strong> (máximo divisor comum) de a e b é o maior inteiro que divide os dois.</p>
+  <table class="truth">
+    <tr><th style="text-align:left">Número</th><th style="text-align:left">Divisores</th></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">12</td><td style="text-align:left; font-family:var(--font-data)"><span class="v">1</span>, <span class="v">2</span>, <span class="v">3</span>, 4, <span class="v">6</span>, 12</td></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">18</td><td style="text-align:left; font-family:var(--font-data)"><span class="v">1</span>, <span class="v">2</span>, <span class="v">3</span>, <span class="v">6</span>, 9, 18</td></tr>
+    <tr><td style="text-align:left">em comum</td><td style="text-align:left; font-family:var(--font-data)">{1, 2, 3, 6} &rarr; mdc(12, 18) = 6</td></tr>
+  </table>
+  <p>Divisores em comum é a interseção de conjuntos da aula 5. Em Python, <code>&amp;</code> faz a interseção de dois <code>set</code>:</p>
+  <pre>comum = <span class="fn">set</span>(<span class="fn">divisores</span>(12)) &amp; <span class="fn">set</span>(<span class="fn">divisores</span>(18))
+<span class="fn">print</span>(comum, <span class="fn">max</span>(comum))</pre>
+  <p class="note">Saída: {1, 2, 3, 6} 6.</p>
+
+  <h3>Coprimos (primos entre si)</h3>
+  <div class="card connective">
+    <div class="connective-text">
+      <h3><span class="sym">mdc(a, b) = 1</span> · Coprimos</h3>
+      <p class="idea">Ideia: os dois não têm nenhum fator em comum além do 1.</p>
+      <p>Divisores de 8: 1, 2, 4, 8. Divisores de 15: 1, 3, 5, 15. O único divisor que aparece nas duas listas é o 1, então 8 e 15 são coprimos.</p>
+      <p class="resumo">Resumo: a e b são coprimos quando mdc(a, b) = 1. O livro chama de "primos entre si".</p>
+    </div>
+  </div>
+
+  <table class="truth">
+    <tr><th style="text-align:left">Cuidado para não confundir</th><th style="text-align:left">Primo</th><th style="text-align:left">Coprimos</th></tr>
+    <tr><td style="text-align:left">fala de</td><td style="text-align:left">um número</td><td style="text-align:left">um par de números</td></tr>
+    <tr><td style="text-align:left">condição</td><td style="text-align:left">o conjunto de divisores nos naturais tem exatamente 2 elementos</td><td style="text-align:left">o único divisor em comum é 1</td></tr>
+    <tr><td style="text-align:left">exemplo</td><td style="text-align:left; font-family:var(--font-data)">7 é primo</td><td style="text-align:left; font-family:var(--font-data)">8 e 15 são coprimos, sem nenhum dos dois ser primo</td></tr>
+  </table>
+
+  <table class="truth">
+    <tr><th style="text-align:left">Par</th><th style="text-align:left">Fatores</th><th>mdc</th><th>Coprimos?</th></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">8 e 15</td><td style="text-align:left; font-family:var(--font-data)">2 &middot; 2 &middot; 2 e 3 &middot; 5</td><td>1</td><td class="v">sim</td></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">9 e 10</td><td style="text-align:left; font-family:var(--font-data)">3 &middot; 3 e 2 &middot; 5</td><td>1</td><td class="v">sim</td></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">12 e 18</td><td style="text-align:left; font-family:var(--font-data)">2 &middot; 2 &middot; 3 e 2 &middot; 3 &middot; 3</td><td>6</td><td class="f">não</td></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">7 e 21</td><td style="text-align:left; font-family:var(--font-data)">7 e 3 &middot; 7</td><td>7</td><td class="f">não</td></tr>
+  </table>
+
+  <pre><span class="kw">def</span> <span class="fn">coprimos</span>(a, b):
+    comum = <span class="fn">set</span>(<span class="fn">divisores</span>(a)) &amp; <span class="fn">set</span>(<span class="fn">divisores</span>(b))
+    <span class="kw">return</span> comum == {1}
+
+<span class="fn">print</span>(<span class="fn">coprimos</span>(8, 15), <span class="fn">coprimos</span>(12, 18))</pre>
+  <p class="note">Saída: True False. É o mesmo teste do <code>código_1</code> da pasta.</p>
+
+  <table class="truth">
+    <tr><th style="text-align:left">Onde o RSA usa coprimos</th></tr>
+    <tr><td style="text-align:left">a chave pública e tem que ser coprima com &phi;(n), senão a chave privada d não existe (aula 8)</td></tr>
+    <tr><td style="text-align:left">&phi;(n) é justamente a contagem dos números coprimos com n (seção 6)</td></tr>
+  </table>
+
+  <h3>Algoritmo de Euclides</h3>
+  <p>Listar divisores fica lento para números grandes. Euclides troca o par (a, b) por (b, resto) até o resto zerar.</p>
+  <div class="card tip">
+    <p style="margin:0; text-align:center; font-family:var(--font-data)">mdc(a, b) = mdc(b, a % b)</p>
+  </div>
+  <table class="truth">
+    <tr><th>a</th><th>b</th><th style="text-align:left">Divisão</th><th>resto</th></tr>
+    <tr><td>420</td><td>66</td><td style="text-align:left; font-family:var(--font-data)">420 = 6 &middot; 66 + 24</td><td>24</td></tr>
+    <tr><td>66</td><td>24</td><td style="text-align:left; font-family:var(--font-data)">66 = 2 &middot; 24 + 18</td><td>18</td></tr>
+    <tr><td>24</td><td>18</td><td style="text-align:left; font-family:var(--font-data)">24 = 1 &middot; 18 + 6</td><td class="v">6</td></tr>
+    <tr><td>18</td><td>6</td><td style="text-align:left; font-family:var(--font-data)">18 = 3 &middot; 6 + 0</td><td>0</td></tr>
+  </table>
+  <p class="note">O último resto diferente de zero é o mdc: mdc(420, 66) = 6.</p>
+
+  <pre><span class="kw">def</span> <span class="fn">mdc</span>(a, b):
+    <span class="kw">while</span> b != 0:
+        a, b = b, a % b
+    <span class="kw">return</span> a
+
+<span class="fn">print</span>(<span class="fn">mdc</span>(420, 66), <span class="fn">mdc</span>(8, 15))</pre>
+  <p class="note">Saída: 6 1. A linha <code>a, b = b, a % b</code> troca os dois valores ao mesmo tempo. O Python já traz pronto: <code>from math import gcd</code> (gcd é a sigla em inglês para mdc).</p>
+
+  <h3>O mdc como combinação linear</h3>
+  <div class="card tip">
+    <p style="margin:0">Para quaisquer a, b positivos existem inteiros i e j com <strong>mdc(a, b) = i &middot; a + j &middot; b</strong>. Os números i e j saem das divisões de Euclides, de baixo para cima.</p>
+  </div>
+  <details class="demo">
+    <summary>Ver como achar i e j para mdc(420, 66) (Exemplo 30 do livro)</summary>
+    <div class="reveal">
+      <p style="text-align:center; margin:0 0 0.4rem"><strong>1.</strong> Em cada divisão de Euclides, passe o resto para o outro lado. Mesma cor = mesmo valor:</p>
+      <table class="truth" style="margin:0.4rem auto">
+        <tr><th>Divisão</th><th></th><th>Resto isolado</th></tr>
+        <tr><td style="font-family:var(--font-data)">420 = 6 &middot; 66 + <span class="b24">24</span></td><td>&rarr;</td><td style="font-family:var(--font-data)"><span class="b24">24</span> = <span class="b24">420 &minus; 6 &middot; 66</span></td></tr>
+        <tr><td style="font-family:var(--font-data)">66 = 2 &middot; 24 + <span class="b18">18</span></td><td>&rarr;</td><td style="font-family:var(--font-data)"><span class="b18">18</span> = <span class="b18">66 &minus; 2 &middot; 24</span></td></tr>
+        <tr><td style="font-family:var(--font-data)">24 = 1 &middot; 18 + <span class="b6">6</span></td><td>&rarr;</td><td style="font-family:var(--font-data)"><span class="b6">6</span> = 24 &minus; 1 &middot; 18</td></tr>
+      </table>
+      <p style="text-align:center; margin:0.6rem 0 0.4rem"><strong>2.</strong> Comece pela linha do <span class="b6">6</span> (o mdc) e troque cada número colorido pelo bloco da mesma cor:</p>
+      <p class="step"><span class="b6">6</span> = 24 &minus; 1 &middot; <span class="b18">18</span></p>
+      <svg width="0" height="0" style="position:absolute"><defs><marker id="seta" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="seta"/></marker></defs></svg>
+      <svg class="umb" viewBox="0 0 250 64" style="width:250px" role="img" aria-label="o 1 multiplica o 66 e o 2 vezes 24">
+        <rect class="r6" x="1" y="40" width="18" height="22" rx="4"/>
+        <rect class="r18" x="136" y="40" width="100" height="22" rx="4"/>
+        <path d="M100 38 Q124.0 2 148 38" marker-end="url(#seta)"/>
+        <path d="M100 38 Q153.0 -26 206 38" marker-end="url(#seta)"/>
+        <text x="10" y="56" class="t6">6</text>
+        <text x="30" y="56">=</text>
+        <text x="55" y="56">24</text>
+        <text x="80" y="56">&#8722;</text>
+        <text x="100" y="56" class="tm">1</text>
+        <text x="115" y="56">&#183;</text>
+        <text x="130" y="56">(</text>
+        <text x="148" y="56" class="t18">66</text>
+        <text x="172" y="56" class="t18">&#8722;</text>
+        <text x="192" y="56" class="t18">2</text>
+        <text x="205" y="56" class="t18">&#183;</text>
+        <text x="222" y="56" class="t18">24</text>
+        <text x="241" y="56">)</text>
+      </svg>
+      <p class="step"><span class="b6">6</span> = 24 &minus; (1 &middot; 66 &minus; 1 &middot; 2 &middot; 24)</p>
+      <p class="step"><span class="b6">6</span> = 24 &minus; 66 + 2 &middot; 24</p>
+      <p class="step"><span class="b6">6</span> = 3 &middot; <span class="b24">24</span> &minus; 66<span class="hint">junta os 24: um 24 sozinho + 2 &middot; 24 = 3 &middot; 24</span></p>
+      <svg class="umb" viewBox="0 0 258 64" style="width:258px" role="img" aria-label="o 3 multiplica o 420 e o 6 vezes 66">
+        <rect class="r6" x="1" y="40" width="18" height="22" rx="4"/>
+        <rect class="r24" x="89" y="40" width="108" height="22" rx="4"/>
+        <path d="M52 38 Q79.0 2 106 38" marker-end="url(#seta)"/>
+        <path d="M52 38 Q110.0 -26 168 38" marker-end="url(#seta)"/>
+        <text x="10" y="56" class="t6">6</text>
+        <text x="30" y="56">=</text>
+        <text x="52" y="56" class="tm">3</text>
+        <text x="67" y="56">&#183;</text>
+        <text x="82" y="56">(</text>
+        <text x="106" y="56" class="t24">420</text>
+        <text x="133" y="56" class="t24">&#8722;</text>
+        <text x="152" y="56" class="t24">6</text>
+        <text x="165" y="56" class="t24">&#183;</text>
+        <text x="183" y="56" class="t24">66</text>
+        <text x="202" y="56">)</text>
+        <text x="222" y="56">&#8722;</text>
+        <text x="244" y="56">66</text>
+      </svg>
+      <p class="step"><span class="b6">6</span> = 3 &middot; 420 &minus; 3 &middot; 6 &middot; 66 &minus; 66</p>
+      <p class="step"><span class="b6">6</span> = 3 &middot; 420 &minus; 18 &middot; 66 &minus; 66</p>
+      <p class="step"><span class="b6">6</span> = 3 &middot; 420 &minus; 19 &middot; 66<span class="hint">junta os 66: &minus;18 &middot; 66 &minus; 1 &middot; 66 = &minus;19 &middot; 66</span></p>
+      <p class="conclusion">Logo, i = 3 e j = &minus;19.</p>
+    </div>
+  </details>
+  <pre><span class="fn">print</span>(3 * 420 - 19 * 66)</pre>
+  <p class="note">Saída: 6. Na aula 8 esse truque vai achar a chave privada d.</p>
+
+  <h2>5. Aritmética modular</h2>
+  <div class="card connective">
+    <div class="connective-text">
+      <h3><span class="sym">a mod n</span> · Resto da divisão</h3>
+      <p class="idea">Ideia: contar em círculo, como o relógio.</p>
+      <p>São 22h e você vai dormir 5 horas. O relógio não mostra 27h, mostra 3h: 27 mod 24 = 3.</p>
+      <p class="resumo">Resumo: mod (abreviação de módulo) é o operador <code>%</code> do Python.</p>
+    </div>
+  </div>
+  <table class="truth">
+    <tr><th style="text-align:left">Conta</th><th style="text-align:left">Divisão</th><th>Resultado</th></tr>
+    <tr><td style="text-align:left"><code>27 % 24</code></td><td style="text-align:left; font-family:var(--font-data)">27 = 1 &middot; 24 + 3</td><td>3</td></tr>
+    <tr><td style="text-align:left"><code>17 % 5</code></td><td style="text-align:left; font-family:var(--font-data)">17 = 3 &middot; 5 + 2</td><td>2</td></tr>
+    <tr><td style="text-align:left"><code>125 % 15</code></td><td style="text-align:left; font-family:var(--font-data)">125 = 8 &middot; 15 + 5</td><td>5</td></tr>
+    <tr><td style="text-align:left"><code>9 % 8</code></td><td style="text-align:left; font-family:var(--font-data)">9 = 1 &middot; 8 + 1</td><td>1</td></tr>
+  </table>
+
+  <table class="truth">
+    <tr><th style="text-align:left">Notação</th><th style="text-align:left">Significa</th><th style="text-align:left">Exemplo</th></tr>
+    <tr><td style="text-align:left; font-family:var(--font-data)">a &equiv; b (mod n)</td><td style="text-align:left">a e b deixam o mesmo resto na divisão por n, ou seja, n | (a &minus; b)</td><td style="text-align:left; font-family:var(--font-data)">27 &equiv; 3 (mod 24)</td></tr>
+  </table>
+
+  <h3>Potência com resto: o <code>pow</code></h3>
+  <p>No RSA a conta é sempre do tipo m<sup>e</sup> mod n. O Python tem dois jeitos de fazer:</p>
+  <table class="truth">
+    <tr><th style="text-align:left">Jeito</th><th style="text-align:left">Código</th><th style="text-align:left">Como calcula 7<sup>3</sup> mod 15</th></tr>
+    <tr><td style="text-align:left">sem biblioteca</td><td style="text-align:left"><code>7 ** 3 % 15</code></td><td style="text-align:left; font-family:var(--font-data)">7 &middot; 7 &middot; 7 = 343, depois 343 mod 15 = 13</td></tr>
+    <tr><td style="text-align:left">com biblioteca</td><td style="text-align:left"><code>pow(7, 3, 15)</code></td><td style="text-align:left; font-family:var(--font-data)">7 &middot; 7 = 49 &rarr; 49 mod 15 = 4<br>4 &middot; 7 = 28 &rarr; 28 mod 15 = 13</td></tr>
+  </table>
+  <p>O resultado é o mesmo, mas o <code>pow</code> tira o resto a cada multiplicação, então o número nunca passa de n.</p>
+  <pre><span class="fn">print</span>(7 ** 3 % 15)
+<span class="fn">print</span>(<span class="fn">pow</span>(7, 3, 15))
+<span class="fn">print</span>(<span class="fn">pow</span>(123456789, 65537, 999999937))</pre>
+  <p class="note">Saída: 13, 13 e um resultado instantâneo. Com <code>**</code> a última conta geraria um número de mais de 500 mil dígitos antes do <code>%</code>.</p>
+
+  <h2>6. A função fi de Euler</h2>
+  <div class="card connective">
+    <div class="connective-text">
+      <h3><span class="sym">&phi;(n)</span> · Fi de Euler</h3>
+      <p class="idea">Ideia: quantos números de 1 até n são coprimos com n.</p>
+      <p>Numa turma de n cadeiras, &phi;(n) conta os alunos cujo número de chamada é coprimo com n.</p>
+      <p class="resumo">Resumo: &phi;(n) = quantidade de k entre 1 e n com mdc(k, n) = 1.</p>
+    </div>
+  </div>
+
+  <div class="nums">
+    <span class="num on">1</span><span class="num off">2</span><span class="num off">3</span><span class="num off">4</span><span class="num on">5</span><span class="num off">6</span><span class="num on">7</span><span class="num off">8</span><span class="num off">9</span><span class="num off">10</span><span class="num on">11</span><span class="num off">12</span>
+  </div>
+  <p class="nums-caption">n = 12: só 1, 5, 7 e 11 são coprimos com 12. Logo &phi;(12) = 4.</p>
+
+  <table class="truth">
+    <tr><th>n</th><th style="text-align:left">Coprimos com n</th><th>&phi;(n)</th></tr>
+    <tr><td>2</td><td style="text-align:left; font-family:var(--font-data)">1</td><td>1</td></tr>
+    <tr><td>5</td><td style="text-align:left; font-family:var(--font-data)">1, 2, 3, 4</td><td>4</td></tr>
+    <tr><td>6</td><td style="text-align:left; font-family:var(--font-data)">1, 5</td><td>2</td></tr>
+    <tr><td>7</td><td style="text-align:left; font-family:var(--font-data)">1, 2, 3, 4, 5, 6</td><td>6</td></tr>
+  </table>
+
+  <pre><span class="kw">from</span> math <span class="kw">import</span> gcd
+
+<span class="kw">def</span> <span class="fn">fi</span>(n):
+    <span class="kw">return</span> <span class="fn">len</span>([k <span class="kw">for</span> k <span class="kw">in</span> <span class="fn">range</span>(1, n + 1) <span class="kw">if</span> <span class="fn">gcd</span>(k, n) == 1])
+
+<span class="fn">print</span>(<span class="fn">fi</span>(12), <span class="fn">fi</span>(7), <span class="fn">fi</span>(15))</pre>
+  <p class="note">Saída: 4 6 8.</p>
+
+  <h3>Caso 1: n primo</h3>
+  <details class="demo">
+    <summary>Ver demonstração: &phi;(p) = p &minus; 1</summary>
+    <div class="reveal">
+      <p style="text-align:center; margin:0 0 0.4rem">Os divisores de um primo p são só 1 e p.</p>
+      <p class="step">para 1 &le; k &lt; p: mdc(k, p) = 1</p>
+      <p class="step">para k = p: mdc(p, p) = p &ne; 1</p>
+      <p class="conclusion">Logo, &phi;(p) = p &minus; 1.</p>
+    </div>
+  </details>
+
+  <h3>Caso 2: n = p &middot; q, com p e q primos diferentes</h3>
+  <div class="card tip">
+    <p style="margin:0; text-align:center; font-family:var(--font-data)">&phi;(p &middot; q) = (p &minus; 1) &middot; (q &minus; 1)</p>
+  </div>
+  <p>É exatamente o caso do RSA. Exemplo com n = 15 = 3 &middot; 5. Primeiro, os divisores de 15:</p>
+  <p class="step" style="font-size:1.1rem">D(15) = {1, <span class="hl">3</span>, <span class="hl">5</span>, <span class="hl">15</span>}</p>
+  <p>Agora os divisores de cada número de 1 a 15. É coprimo com 15 quando o único divisor em comum é o 1:</p>
+  <table class="truth">
+    <tr><th>k</th><th style="text-align:left">D(k)</th><th>em comum com D(15)</th><th>coprimo?</th></tr>
+    <tr><td>1</td><td style="text-align:left; font-family:var(--font-data)">{1}</td><td style="font-family:var(--font-data)">{1}</td><td class="v">sim</td></tr>
+    <tr><td>2</td><td style="text-align:left; font-family:var(--font-data)">{1, 2}</td><td style="font-family:var(--font-data)">{1}</td><td class="v">sim</td></tr>
+    <tr><td>3</td><td style="text-align:left; font-family:var(--font-data)">{1, <span class="hl">3</span>}</td><td style="font-family:var(--font-data)">{1, 3}</td><td class="f">não</td></tr>
+    <tr><td>4</td><td style="text-align:left; font-family:var(--font-data)">{1, 2, 4}</td><td style="font-family:var(--font-data)">{1}</td><td class="v">sim</td></tr>
+    <tr><td>5</td><td style="text-align:left; font-family:var(--font-data)">{1, <span class="hl">5</span>}</td><td style="font-family:var(--font-data)">{1, 5}</td><td class="f">não</td></tr>
+    <tr><td>6</td><td style="text-align:left; font-family:var(--font-data)">{1, 2, <span class="hl">3</span>, 6}</td><td style="font-family:var(--font-data)">{1, 3}</td><td class="f">não</td></tr>
+    <tr><td>7</td><td style="text-align:left; font-family:var(--font-data)">{1, 7}</td><td style="font-family:var(--font-data)">{1}</td><td class="v">sim</td></tr>
+    <tr><td>8</td><td style="text-align:left; font-family:var(--font-data)">{1, 2, 4, 8}</td><td style="font-family:var(--font-data)">{1}</td><td class="v">sim</td></tr>
+    <tr><td>9</td><td style="text-align:left; font-family:var(--font-data)">{1, <span class="hl">3</span>, 9}</td><td style="font-family:var(--font-data)">{1, 3}</td><td class="f">não</td></tr>
+    <tr><td>10</td><td style="text-align:left; font-family:var(--font-data)">{1, 2, <span class="hl">5</span>, 10}</td><td style="font-family:var(--font-data)">{1, 5}</td><td class="f">não</td></tr>
+    <tr><td>11</td><td style="text-align:left; font-family:var(--font-data)">{1, 11}</td><td style="font-family:var(--font-data)">{1}</td><td class="v">sim</td></tr>
+    <tr><td>12</td><td style="text-align:left; font-family:var(--font-data)">{1, 2, <span class="hl">3</span>, 4, 6, 12}</td><td style="font-family:var(--font-data)">{1, 3}</td><td class="f">não</td></tr>
+    <tr><td>13</td><td style="text-align:left; font-family:var(--font-data)">{1, 13}</td><td style="font-family:var(--font-data)">{1}</td><td class="v">sim</td></tr>
+    <tr><td>14</td><td style="text-align:left; font-family:var(--font-data)">{1, 2, 7, 14}</td><td style="font-family:var(--font-data)">{1}</td><td class="v">sim</td></tr>
+    <tr><td>15</td><td style="text-align:left; font-family:var(--font-data)">{1, <span class="hl">3</span>, <span class="hl">5</span>, <span class="hl">15</span>}</td><td style="font-family:var(--font-data)">{1, 3, 5, 15}</td><td class="f">não</td></tr>
+  </table>
+  <p class="note" style="margin-top:0.4rem">Em destaque, os divisores que também dividem 15.</p>
+  <p class="step">coprimos com 15: {1, 2, 4, 7, 8, 11, 13, 14}</p>
+  <p class="conclusion">&phi;(15) = 8 = (3 &minus; 1) &middot; (5 &minus; 1)</p>
+  <pre>D15 = <span class="fn">set</span>(<span class="fn">divisores</span>(15))
+coprimos = [k <span class="kw">for</span> k <span class="kw">in</span> <span class="fn">range</span>(1, 16) <span class="kw">if</span> <span class="fn">set</span>(<span class="fn">divisores</span>(k)) &amp; D15 == {1}]
+<span class="fn">print</span>(D15, coprimos, <span class="fn">len</span>(coprimos))</pre>
+  <p class="note">Saída: {1, 3, 5, 15} [1, 2, 4, 7, 8, 11, 13, 14] 8.</p>
+
+  <h2>Resumo da parte 1</h2>
+  <table class="truth">
+    <tr><th style="text-align:left">Conceito</th><th style="text-align:left">Matemática</th><th style="text-align:left">Python</th></tr>
+    <tr><td style="text-align:left">divisores</td><td style="text-align:left; font-family:var(--font-data)">a | n</td><td style="text-align:left"><code>[i for i in range(1, n + 1) if n % i == 0]</code></td></tr>
+    <tr><td style="text-align:left">primo</td><td style="text-align:left">|D(n)| = 2</td><td style="text-align:left"><code>len(divisores(n)) == 2</code></td></tr>
+    <tr><td style="text-align:left">coprimos</td><td style="text-align:left; font-family:var(--font-data)">mdc(a, b) = 1</td><td style="text-align:left"><code>gcd(a, b) == 1</code></td></tr>
+    <tr><td style="text-align:left">mdc</td><td style="text-align:left; font-family:var(--font-data)">mdc(a, b) = mdc(b, a mod b)</td><td style="text-align:left"><code>gcd(a, b)</code></td></tr>
+    <tr><td style="text-align:left">resto</td><td style="text-align:left; font-family:var(--font-data)">a mod n</td><td style="text-align:left"><code>a % n</code></td></tr>
+    <tr><td style="text-align:left">potência modular</td><td style="text-align:left; font-family:var(--font-data)">a<sup>b</sup> mod n</td><td style="text-align:left"><code>pow(a, b, n)</code></td></tr>
+    <tr><td style="text-align:left">fi de Euler</td><td style="text-align:left; font-family:var(--font-data)">&phi;(pq) = (p &minus; 1)(q &minus; 1)</td><td style="text-align:left"><code>(p - 1) * (q - 1)</code></td></tr>
+  </table>
+  <p>Na <a href="../08/aula8.html">aula 8</a> essas peças viram o RSA completo, com código para cifrar e decifrar texto.</p>
+
+  <footer class="nav">
+    <a class="back" href="../index.html">&larr; Voltar ao mapa de aulas</a>
+  </footer>
+
+</div>
