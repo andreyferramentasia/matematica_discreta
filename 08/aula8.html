@@ -1,0 +1,432 @@
+<meta charset="UTF-8">
+<title>Aula 8: RSA parte 2 | Matemática Discreta</title>
+<link rel="stylesheet" href="../assets/estilo.css">
+<style>
+  table.truth td[style*="text-align:left"], table.truth th[style*="text-align:left"] { text-align: left; }
+  .step { text-align: center; font-family: var(--font-data); margin: 0.35rem 0; }
+  .conclusion { text-align: center; color: var(--accent); font-weight: 600; margin: 0.6rem 0 0; }
+  .note { margin-top: -0.3rem; font-size: 0.9rem; color: var(--ink-2); }
+
+  .side { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .side > div { flex: 1 1 400px; min-width: 0; }
+  .side h3 { margin-top: 0.4rem; }
+  .fluxo { display: block; width: 100%; max-width: 640px; height: auto; margin: 1rem auto 0.4rem; }
+  .fluxo .fbox rect { fill: var(--surface-2); stroke-width: 1.5; }
+  .fluxo .fbox.pub rect { stroke: var(--content); }
+  .fluxo .fbox.sec rect { stroke: var(--bad); }
+  .fluxo .fbox circle { fill: var(--accent); }
+  .fluxo text { text-anchor: middle; font-family: var(--font-data); fill: var(--ink); }
+  .fluxo text.n { fill: var(--accent-ink); font-size: 12px; font-weight: 700; }
+  .fluxo text.t { font-family: var(--font-body); font-size: 12px; fill: var(--ink-2); }
+  .fluxo text.f { font-size: 14px; font-weight: 700; }
+  .fluxo .pub text.f { fill: var(--content); }
+  .fluxo .sec text.f { fill: var(--bad); }
+  .fluxo text.ex { font-size: 13px; fill: var(--ink); }
+  .fluxo text.lbl { font-size: 12px; fill: var(--ink-2); }
+  .fluxo .farrow { fill: none; stroke: var(--ink-2); stroke-width: 1.4; }
+  .fluxo .farrow.dash { stroke-dasharray: 5 4; }
+  .fluxo marker path { fill: var(--ink-2); }
+  .legenda { display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap; font-size: 0.85rem; color: var(--ink-2); margin: 0 0 1rem; }
+  .legenda .lp::before, .legenda .ls::before { content: ""; display: inline-block; width: 0.8rem; height: 0.8rem; border-radius: 3px; margin-right: 0.35rem; vertical-align: -0.1rem; border: 2px solid; }
+  .legenda .lp::before { border-color: var(--content); }
+  .legenda .ls::before { border-color: var(--bad); }
+  h3.passo { display: flex; align-items: center; gap: 0.5rem; margin-top: 2rem; }
+  .num-passo { display: inline-flex; align-items: center; justify-content: center; width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: 0.85rem; font-family: var(--font-data); flex: none; }
+  .card.recipe .formula { text-align: center; font-family: var(--font-data); font-weight: 700; color: var(--accent); font-size: 1.05rem; margin: 0 0 0.6rem; }
+</style>
+
+<div class="page">
+
+  <a class="back" href="../index.html">&larr; Voltar ao mapa de aulas</a>
+
+  <header class="masthead">
+    <p class="eyebrow">Matemática Discreta · Aula 08</p>
+    <h1>RSA parte 2: a receita</h1>
+    <p class="sub">Passo a passo: fórmula, exemplo resolvido e código. A teoria de cada passo está na <a href="../07/aula7.html">aula 7</a>. (Gersting, cap. 2.4)</p>
+  </header>
+
+  <h2>1. O fluxograma</h2>
+  <p>Cada caixa é um passo da receita. As setas mostram de onde vem cada valor.</p>
+  <svg class="fluxo" viewBox="0 0 640 594" role="img" aria-label="Fluxograma do RSA: primos, n, fi, e, d, chaves, cifrar e decifrar">
+    <defs><marker id="fseta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z"/></marker></defs>
+    <path class="farrow " d="M190 74 L160 110" marker-end="url(#fseta)"/>
+    <path class="farrow " d="M230 74 L450 110" marker-end="url(#fseta)"/>
+    <path class="farrow " d="M410 74 L200 110" marker-end="url(#fseta)"/>
+    <path class="farrow " d="M450 74 L480 110" marker-end="url(#fseta)"/>
+    <path class="farrow " d="M480 174 L480 210" marker-end="url(#fseta)"/>
+    <path class="farrow " d="M480 274 L480 310" marker-end="url(#fseta)"/>
+    <path class="farrow " d="M600 142 L622 142 L622 342 L602 342" marker-end="url(#fseta)"/>
+    <path class="farrow " d="M480 374 L480 410" marker-end="url(#fseta)"/>
+    <path class="farrow " d="M160 174 L160 410" marker-end="url(#fseta)"/>
+    <path class="farrow " d="M360 250 L240 410" marker-end="url(#fseta)"/>
+    <path class="farrow dash" d="M280 158 L320 158 L320 396 L440 396 L440 410" marker-end="url(#fseta)"/>
+    <path class="farrow " d="M160 474 L160 520" marker-end="url(#fseta)"/>
+    <path class="farrow " d="M480 474 L480 520" marker-end="url(#fseta)"/>
+    <path class="farrow " d="M280 552 L358 552" marker-end="url(#fseta)"/>
+    <text class="lbl" x="320" y="544">c = 13</text>
+    <g class="fbox sec">
+      <rect x="150" y="10" width="120" height="64" rx="8"/>
+      <circle cx="164" cy="24" r="10"/><text class="n" x="164" y="28">1</text>
+      <text class="t" x="210.0" y="28">primo p</text>
+      <text class="f" x="210.0" y="55">p = 5</text>
+    </g>
+    <g class="fbox sec">
+      <rect x="370" y="10" width="120" height="64" rx="8"/>
+      <circle cx="384" cy="24" r="10"/><text class="n" x="384" y="28">1</text>
+      <text class="t" x="430.0" y="28">primo q</text>
+      <text class="f" x="430.0" y="55">q = 3</text>
+    </g>
+    <g class="fbox pub">
+      <rect x="40" y="110" width="240" height="64" rx="8"/>
+      <circle cx="54" cy="124" r="10"/><text class="n" x="54" y="128">2</text>
+      <text class="t" x="160.0" y="128">n</text>
+      <text class="f" x="160.0" y="148">n = p &#183; q</text>
+      <text class="ex" x="160.0" y="166">5 &#183; 3 = 15</text>
+    </g>
+    <g class="fbox sec">
+      <rect x="360" y="110" width="240" height="64" rx="8"/>
+      <circle cx="374" cy="124" r="10"/><text class="n" x="374" y="128">3</text>
+      <text class="t" x="480.0" y="128">fi de Euler</text>
+      <text class="f" x="480.0" y="148">&#966; = (p &#8722; 1)(q &#8722; 1)</text>
+      <text class="ex" x="480.0" y="166">4 &#183; 2 = 8</text>
+    </g>
+    <g class="fbox pub">
+      <rect x="360" y="210" width="240" height="64" rx="8"/>
+      <circle cx="374" cy="224" r="10"/><text class="n" x="374" y="228">4</text>
+      <text class="t" x="480.0" y="228">chave e</text>
+      <text class="f" x="480.0" y="248">1 &lt; e &lt; &#966;, mdc(e, &#966;) = 1</text>
+      <text class="ex" x="480.0" y="266">candidatos 3, 5, 7 &#8594; e = 3</text>
+    </g>
+    <g class="fbox sec">
+      <rect x="360" y="310" width="240" height="64" rx="8"/>
+      <circle cx="374" cy="324" r="10"/><text class="n" x="374" y="328">5</text>
+      <text class="t" x="480.0" y="328">chave d</text>
+      <text class="f" x="480.0" y="348">(e &#183; d) mod &#966; = 1</text>
+      <text class="ex" x="480.0" y="366">9 mod 8 = 1 &#8594; d = 3</text>
+    </g>
+    <g class="fbox pub">
+      <rect x="40" y="410" width="240" height="64" rx="8"/>
+      <circle cx="54" cy="424" r="10"/><text class="n" x="54" y="428">6</text>
+      <text class="t" x="160.0" y="428">chave pública</text>
+      <text class="f" x="160.0" y="448">(e, n)</text>
+      <text class="ex" x="160.0" y="466">(3, 15)</text>
+    </g>
+    <g class="fbox sec">
+      <rect x="360" y="410" width="240" height="64" rx="8"/>
+      <circle cx="374" cy="424" r="10"/><text class="n" x="374" y="428">6</text>
+      <text class="t" x="480.0" y="428">chave privada</text>
+      <text class="f" x="480.0" y="448">(d, n)</text>
+      <text class="ex" x="480.0" y="466">(3, 15)</text>
+    </g>
+    <g class="fbox pub">
+      <rect x="40" y="520" width="240" height="64" rx="8"/>
+      <circle cx="54" cy="534" r="10"/><text class="n" x="54" y="538">7</text>
+      <text class="t" x="160.0" y="538">cifrar</text>
+      <text class="f" x="160.0" y="558">c = m&#7497; mod n</text>
+      <text class="ex" x="160.0" y="576">7&#179; mod 15 = 13</text>
+    </g>
+    <g class="fbox sec">
+      <rect x="360" y="520" width="240" height="64" rx="8"/>
+      <circle cx="374" cy="534" r="10"/><text class="n" x="374" y="538">8</text>
+      <text class="t" x="480.0" y="538">decifrar</text>
+      <text class="f" x="480.0" y="558">m = c&#7496; mod n</text>
+      <text class="ex" x="480.0" y="576">13&#179; mod 15 = 7</text>
+    </g>
+  </svg>
+  <div class="legenda"><span class="lp">pode ser público</span><span class="ls">segredo de quem gera as chaves</span><span>tracejado: o n também entra na chave privada</span></div>
+
+  <h2>2. Ingredientes</h2>
+  <table class="truth">
+    <tr><th style="text-align:left">Ingrediente</th><th style="text-align:left">Regra</th><th style="text-align:left">No exemplo</th></tr>
+    <tr><td style="text-align:left">dois primos p e q</td><td style="text-align:left">diferentes entre si</td><td style="text-align:left; font-family:var(--font-data)">p = 5, q = 3</td></tr>
+    <tr><td style="text-align:left">mensagem m</td><td style="text-align:left">um número menor que n</td><td style="text-align:left; font-family:var(--font-data)">m = 7</td></tr>
+  </table>
+
+  <h2>3. Modo de preparo</h2>
+  <h3 class="passo"><span class="num-passo">1</span> Escolher dois primos</h3>
+  <div class="card recipe">
+    <p class="formula">p e q primos</p>
+    <p class="step">p = 5 &nbsp; q = 3</p>
+    <p class="conclusion">Os dois são primos (segredo).</p>
+  </div>
+  <pre>p = 5
+q = 3
+<span class="fn">print</span>(p, q)</pre>
+  <p class="note">Saída: 5 3.</p>
+
+  <h3 class="passo"><span class="num-passo">2</span> Calcular n</h3>
+  <div class="card recipe">
+    <p class="formula">n = p &middot; q</p>
+    <p class="step">n = 5 &middot; 3</p>
+    <p class="step">n = 15</p>
+    <p class="conclusion">n = 15 (vai na chave pública).</p>
+  </div>
+  <pre><span class="kw">def</span> <span class="fn">calcular_n</span>(p, q):
+    <span class="kw">return</span> p * q
+
+n = <span class="fn">calcular_n</span>(p, q)
+<span class="fn">print</span>(n)</pre>
+  <p class="note">Saída: 15.</p>
+
+  <h3 class="passo"><span class="num-passo">3</span> Calcular &phi;(n)</h3>
+  <div class="card recipe">
+    <p class="formula">&phi;(n) = (p &minus; 1) &middot; (q &minus; 1)</p>
+    <p class="step">&phi;(n) = (5 &minus; 1) &middot; (3 &minus; 1)</p>
+    <p class="step">&phi;(n) = 4 &middot; 2</p>
+    <p class="step">&phi;(n) = 8</p>
+    <p class="conclusion">&phi;(n) = 8 (segredo).</p>
+  </div>
+  <pre><span class="kw">def</span> <span class="fn">calcular_fi</span>(p, q):
+    <span class="kw">return</span> (p - 1) * (q - 1)
+
+fi = <span class="fn">calcular_fi</span>(p, q)
+<span class="fn">print</span>(fi)</pre>
+  <p class="note">Saída: 8.</p>
+
+  <h3 class="passo"><span class="num-passo">4</span> Escolher e</h3>
+  <div class="card recipe">
+    <p class="formula">1 &lt; e &lt; &phi;(n) &nbsp;e&nbsp; mdc(e, &phi;(n)) = 1</p>
+    <p class="step">divisores de 8: 1, 2, 4, 8</p>
+    <p class="step">divisores de 3: 1, 3</p>
+    <p class="step">em comum: só o 1 &rarr; mdc(3, 8) = 1</p>
+    <p class="conclusion">e = 3 (coprimo com 8).</p>
+  </div>
+  <table class="truth">
+    <tr><th>e</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th></tr>
+    <tr><th>mdc(e, 8)</th><td>2</td><td>1</td><td>4</td><td>1</td><td>2</td><td>1</td></tr>
+    <tr><th>serve?</th><td class="f">não</td><td class="v">sim</td><td class="f">não</td><td class="v">sim</td><td class="f">não</td><td class="v">sim</td></tr>
+  </table>
+  <pre><span class="kw">from</span> math <span class="kw">import</span> gcd
+
+<span class="kw">def</span> <span class="fn">calcular_candidatos</span>(fi):
+    <span class="kw">return</span> [x <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(2, fi) <span class="kw">if</span> <span class="fn">gcd</span>(x, fi) == 1]
+
+lista_candidatos = <span class="fn">calcular_candidatos</span>(fi)
+e = lista_candidatos[0]
+<span class="fn">print</span>(lista_candidatos, e)</pre>
+  <p class="note">Saída: [3, 5, 7] 3. Qualquer um dos três serve (cada um terá o seu d no passo 5); aqui pegamos o primeiro com <code>lista_candidatos[0]</code>.</p>
+
+  <h3 class="passo"><span class="num-passo">5</span> Achar d</h3>
+  <div class="card recipe">
+    <p class="formula">(e &middot; d) mod &phi;(n) = 1</p>
+    <p class="step">d = 1: 3 &middot; 1 = 3 &rarr; 3 mod 8 = 3</p>
+    <p class="step">d = 2: 3 &middot; 2 = 6 &rarr; 6 mod 8 = 6</p>
+    <p class="step">d = 3: 3 &middot; 3 = 9 &rarr; 9 mod 8 = 1</p>
+    <p class="conclusion">d = 3 (segredo).</p>
+  </div>
+  <div class="side">
+    <div>
+      <h3>Sem biblioteca</h3>
+      <pre>d = 1
+<span class="kw">while</span> (e * d) % fi != 1:
+    d = d + 1
+<span class="fn">print</span>(d)</pre>
+    </div>
+    <div>
+      <h3>Com biblioteca (Python 3.8+)</h3>
+      <pre>d = <span class="fn">pow</span>(e, -1, fi)
+<span class="fn">print</span>(d)</pre>
+    </div>
+  </div>
+  <p class="note">Saída dos dois: 3. Com números grandes só o <code>pow</code> termina a tempo.</p>
+
+  <h3 class="passo"><span class="num-passo">6</span> Montar as chaves</h3>
+  <div class="card recipe">
+    <p class="formula">pública (e, n) &nbsp;&nbsp; privada (d, n)</p>
+    <p class="step">pública = (3, 15)</p>
+    <p class="step">privada = (3, 15)</p>
+    <p class="conclusion">Publique (e, n). Guarde d e jogue fora p, q e &phi;(n).</p>
+  </div>
+  <pre><span class="fn">print</span>(<span class="str">f"Chave pública {e, n}, Chave privada {d, n}"</span>)</pre>
+  <p class="note">Saída: Chave pública (3, 15), Chave privada (3, 15). Quem descobre &phi;(n) acha d no passo 5, por isso ele fica secreto.</p>
+
+  <h3 class="passo"><span class="num-passo">7</span> Cifrar</h3>
+  <div class="card recipe">
+    <p class="formula">c = m<sup>e</sup> mod n</p>
+    <p class="step">c = 7<sup>3</sup> mod 15</p>
+    <p class="step">7<sup>3</sup> = 343</p>
+    <p class="step">343 = 22 &middot; 15 + 13</p>
+    <p class="conclusion">c = 13.</p>
+  </div>
+  <div class="side">
+    <div>
+      <h3>Sem biblioteca</h3>
+      <pre><span class="kw">def</span> <span class="fn">criptografar</span>(m, e, n):
+    <span class="kw">return</span> (m ** e) % n</pre>
+    </div>
+    <div>
+      <h3>Com biblioteca</h3>
+      <pre><span class="kw">def</span> <span class="fn">criptografar</span>(m, e, n):
+    <span class="kw">return</span> <span class="fn">pow</span>(m, e, n)</pre>
+    </div>
+  </div>
+  <pre>m = 7
+mc = <span class="fn">criptografar</span>(m, e, n)
+<span class="fn">print</span>(mc)</pre>
+  <p class="note">Saída: 13.</p>
+
+  <h3 class="passo"><span class="num-passo">8</span> Decifrar</h3>
+  <div class="card recipe">
+    <p class="formula">m = c<sup>d</sup> mod n</p>
+    <p class="step">m = 13<sup>3</sup> mod 15</p>
+    <p class="step">13<sup>3</sup> = 2197</p>
+    <p class="step">2197 = 146 &middot; 15 + 7</p>
+    <p class="conclusion">m = 7, a mensagem original.</p>
+  </div>
+  <div class="side">
+    <div>
+      <h3>Sem biblioteca</h3>
+      <pre><span class="kw">def</span> <span class="fn">descriptografar</span>(c, d, n):
+    <span class="kw">return</span> (c ** d) % n</pre>
+    </div>
+    <div>
+      <h3>Com biblioteca</h3>
+      <pre><span class="kw">def</span> <span class="fn">descriptografar</span>(c, d, n):
+    <span class="kw">return</span> <span class="fn">pow</span>(c, d, n)</pre>
+    </div>
+  </div>
+  <pre>dm = <span class="fn">descriptografar</span>(mc, d, n)
+<span class="fn">print</span>(dm)</pre>
+  <p class="note">Saída: 7.</p>
+
+  <h3>Receita completa</h3>
+  <pre><span class="kw">from</span> math <span class="kw">import</span> gcd
+
+p = 5
+q = 3
+<span class="fn">print</span>(p, q)
+
+<span class="kw">def</span> <span class="fn">calcular_n</span>(p, q):
+    <span class="kw">return</span> p * q
+
+<span class="kw">def</span> <span class="fn">calcular_fi</span>(p, q):
+    <span class="kw">return</span> (p - 1) * (q - 1)
+
+<span class="kw">def</span> <span class="fn">calcular_candidatos</span>(fi):
+    <span class="kw">return</span> [x <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(2, fi) <span class="kw">if</span> <span class="fn">gcd</span>(x, fi) == 1]
+
+<span class="kw">def</span> <span class="fn">criptografar</span>(m, e, n):
+    <span class="kw">return</span> <span class="fn">pow</span>(m, e, n)
+
+<span class="kw">def</span> <span class="fn">descriptografar</span>(c, d, n):
+    <span class="kw">return</span> <span class="fn">pow</span>(c, d, n)
+
+n = <span class="fn">calcular_n</span>(p, q)
+fi = <span class="fn">calcular_fi</span>(p, q)
+lista_candidatos = <span class="fn">calcular_candidatos</span>(fi)
+e = lista_candidatos[0]
+d = <span class="fn">pow</span>(e, -1, fi)
+<span class="fn">print</span>(<span class="str">f"Chave pública {e, n}, Chave privada {d, n}"</span>)
+
+m = 7
+mc = <span class="fn">criptografar</span>(m, e, n)
+<span class="fn">print</span>(mc)
+
+dm = <span class="fn">descriptografar</span>(mc, d, n)
+<span class="fn">print</span>(dm)</pre>
+  <p class="note">Saída: 5 3, Chave pública (3, 15), Chave privada (3, 15), 13 e 7.</p>
+  <div class="card tip">
+    <p style="margin:0 0 0.5rem"><strong>Variações:</strong></p>
+    <ul style="margin:0">
+      <li>primos aleatórios: <code>import sympy</code> e <code>p = sympy.randprime(100, 1000)</code> (precisa instalar com <code>pip install sympy</code>);</li>
+      <li>e aleatório entre os candidatos: <code>from random import choice</code> e <code>e = choice(lista_candidatos)</code>.</li>
+    </ul>
+  </div>
+
+  <h2>4. Por que é seguro</h2>
+  <table class="truth">
+    <tr><th style="text-align:left">Quem</th><th style="text-align:left">Sabe</th><th style="text-align:left">Consegue decifrar?</th></tr>
+    <tr><td style="text-align:left">dono da chave</td><td style="text-align:left">d (calculado a partir de p e q)</td><td class="v" style="text-align:left">sim, na hora</td></tr>
+    <tr><td style="text-align:left">atacante</td><td style="text-align:left">só (e, n)</td><td class="f" style="text-align:left">precisa fatorar n para achar p, q, &phi; e d</td></tr>
+  </table>
+  <p>Para fatorar basta testar divisores até &radic;n: se n = p &middot; q com p &le; q, então p &middot; p &le; n, ou seja, p &le; &radic;n. Para n = 143 isso é instantâneo:</p>
+  <pre>n = 143
+p = [x <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(2, <span class="fn">int</span>(n ** 0.5) + 1) <span class="kw">if</span> n % x == 0][0]
+q = n // p
+<span class="fn">print</span>(p, q, <span class="fn">pow</span>(7, -1, (p - 1) * (q - 1)))</pre>
+  <p class="note">Saída: 11 13 103. A chave privada caiu.</p>
+  <table class="truth">
+    <tr><th style="text-align:left">Tamanho de n</th><th style="text-align:left">Candidatos até &radic;n</th><th style="text-align:left">Fatorar</th></tr>
+    <tr><td style="text-align:left">3 dígitos (143)</td><td style="text-align:left">cerca de 10</td><td style="text-align:left">instantâneo</td></tr>
+    <tr><td style="text-align:left">20 dígitos</td><td style="text-align:left">cerca de 10<sup>10</sup></td><td style="text-align:left">minutos</td></tr>
+    <tr><td style="text-align:left">617 dígitos (RSA de 2048 bits)</td><td style="text-align:left">cerca de 10<sup>308</sup></td><td style="text-align:left">computacionalmente inviável</td></tr>
+  </table>
+  <p class="note">Com os algoritmos clássicos conhecidos, fatorar uma chave RSA-2048 corretamente gerada é computacionalmente inviável com os recursos atualmente demonstrados.</p>
+
+  <h2>Exercício</h2>
+  <ol class="exercises">
+    <li>
+      Implemente o algoritmo do RSA e criptografe o número <strong>365</strong>. Use os primos p = 17 e q = 23 (lembre: a mensagem precisa ser menor que n). Escreva:
+      <ul>
+        <li><code>gerar_chaves(p, q)</code>, que devolve <code>(e, d, n)</code>. Para o e, use o <strong>primeiro candidato da lista</strong> (o menor número coprimo com &phi;(n), como no passo 4);</li>
+        <li><code>criptografar(m, e, n)</code>, que devolve a cifra c;</li>
+        <li><code>descriptografar(c, d, n)</code>, que devolve a mensagem.</li>
+      </ul>
+      Confira que descriptografar a cifra devolve 365.
+    </li>
+  </ol>
+
+  <h2>Extra: cifrando texto</h2>
+  <p class="note" style="margin-top:0">Parte opcional, fora do exercício.</p>
+  <p>O RSA cifra números. Para cifrar texto, primeiro trocamos cada letra por um número usando um dicionário.</p>
+  <div class="card tip">
+    <p style="margin:0 0 0.5rem"><strong>Regra: a mensagem m precisa ser menor que n.</strong></p>
+    <ul style="margin:0">
+      <li>O mod n só enxerga restos de 0 a n &minus; 1: para ele, 21 e 6 são o mesmo número (21 &equiv; 6 mod 15).</li>
+      <li>Com n = 15, uma letra valendo 21 voltaria como 6. Por isso, para texto, usamos primos maiores.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <p class="step">p = 11 &nbsp; q = 13</p>
+    <p class="step">n = 11 &middot; 13 = 143</p>
+    <p class="step">&phi;(n) = 10 &middot; 12 = 120</p>
+    <p class="step">menor e coprimo com 120: e = 7</p>
+    <p class="step">(7 &middot; d) mod 120 = 1 &rarr; d = 103 (7 &middot; 103 = 721 = 6 &middot; 120 + 1)</p>
+    <p class="conclusion">Pública (7, 143), privada (103, 143).</p>
+  </div>
+  <pre><span class="kw">from</span> math <span class="kw">import</span> gcd
+
+p = 11
+q = 13
+n = p * q
+fi = (p - 1) * (q - 1)
+
+e = [x <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(2, fi) <span class="kw">if</span> <span class="fn">gcd</span>(x, fi) == 1][0]
+d = 1
+<span class="kw">while</span> (e * d) % fi != 1:
+    d = d + 1
+
+tabela = {<span class="str">'a'</span>: 21, <span class="str">'b'</span>: 22, <span class="str">'c'</span>: 23, <span class="str">'d'</span>: 24, <span class="str">'e'</span>: 25, <span class="str">'f'</span>: 26}
+tabela_inversa = {v: k <span class="kw">for</span> k, v <span class="kw">in</span> tabela.<span class="fn">items</span>()}
+
+<span class="kw">def</span> <span class="fn">frase_para_numeros</span>(frase):
+    <span class="kw">return</span> [tabela.<span class="fn">get</span>(letra) <span class="kw">for</span> letra <span class="kw">in</span> frase]
+
+<span class="kw">def</span> <span class="fn">numeros_para_frase</span>(numeros):
+    <span class="kw">return</span> <span class="str">''</span>.<span class="fn">join</span>([tabela_inversa.<span class="fn">get</span>(m) <span class="kw">for</span> m <span class="kw">in</span> numeros])
+
+<span class="kw">def</span> <span class="fn">criptografar</span>(numeros):
+    <span class="kw">return</span> [(m ** e) % n <span class="kw">for</span> m <span class="kw">in</span> numeros]
+
+<span class="kw">def</span> <span class="fn">descriptografar</span>(cifra):
+    <span class="kw">return</span> [(c ** d) % n <span class="kw">for</span> c <span class="kw">in</span> cifra]
+
+cifra = <span class="fn">criptografar</span>(<span class="fn">frase_para_numeros</span>(<span class="str">'ae'</span>))
+<span class="fn">print</span>(cifra)
+<span class="fn">print</span>(<span class="fn">descriptografar</span>(cifra))
+<span class="fn">print</span>(<span class="fn">numeros_para_frase</span>(<span class="fn">descriptografar</span>(cifra)))</pre>
+  <p class="note">Saída: [109, 64], [21, 25] e ae. O caminho completo: letra &rarr; número &rarr; cifra &rarr; número &rarr; letra.</p>
+
+  <table class="truth">
+    <tr><th style="text-align:left">Sintaxe</th><th style="text-align:left">O que faz</th><th style="text-align:left">Exemplo</th></tr>
+    <tr><td style="text-align:left"><code>{k: v for ...}</code></td><td style="text-align:left">dict comprehension: monta um dicionário numa linha</td><td style="text-align:left; font-family:var(--font-data)">{21: 'a', 22: 'b', ...}</td></tr>
+    <tr><td style="text-align:left"><code>d.items()</code></td><td style="text-align:left">pares (chave, valor) do dicionário</td><td style="text-align:left">usado para inverter a tabela</td></tr>
+    <tr><td style="text-align:left"><code>d.get(k)</code> e <code>d[k]</code></td><td style="text-align:left">buscam o valor da chave k</td><td style="text-align:left"><code>get</code> devolve None se k não existir</td></tr>
+    <tr><td style="text-align:left"><code>''.join(lista)</code></td><td style="text-align:left">cola uma lista de letras numa string</td><td style="text-align:left; font-family:var(--font-data)">['a', 'e'] &rarr; 'ae'</td></tr>
+  </table>
+
+  <footer class="nav">
+    <a class="back" href="../index.html">&larr; Voltar ao mapa de aulas</a>
+  </footer>
+
+</div>
